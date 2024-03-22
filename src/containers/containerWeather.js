@@ -1,4 +1,4 @@
-import {  updateAllFavoritePlaces, updateAllData,fetchDataSuccess, fetchPlaceInformation, setFavoritePlace, fetchDataSavedPlacesLocalStore, fetchDataFavoritePlacesLocalStore, removeFavoritePlace} from "../actions/actionsWeather";
+import {  updateAllFavoritePlaces, updateAllData,fetchDataSuccess, fetchPlaceInformation, setFavoritePlace, fetchDataSavedPlacesLocalStore, fetchDataFavoritePlacesLocalStore, removeFavoritePlace, changeContent} from "../actions/actionsWeather";
 
 export const mapStateToProps = (state) => {
     return {
@@ -7,7 +7,8 @@ export const mapStateToProps = (state) => {
       timeOfDay: state.weatherState.timeOfDay,
       nameOfPlace: state.weatherState.nameOfPlace,
       imageLink: state.weatherState.imageLink,
-      favoritePlaces: state.weatherState.favoritePlaces
+      favoritePlaces: state.weatherState.favoritePlaces,
+      actualContent: state.weatherState.actualContent,
     }
   };
   
@@ -21,6 +22,7 @@ export const mapStateToProps = (state) => {
       updateAllData: (allData) => dispatch(updateAllData(allData)),
       removeFavoritePlace: (index) => dispatch(removeFavoritePlace(index)),
       updateAllFavoritePlaces: (updatedPlaces) => dispatch(updateAllFavoritePlaces(updatedPlaces)),
+      changeContent: (titleContent) => dispatch(changeContent(titleContent)),
     }
   };
   

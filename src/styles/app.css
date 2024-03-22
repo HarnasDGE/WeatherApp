@@ -67,14 +67,20 @@
 }
 
 header {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#main-header-line {
+    width: 100%;
     height: 80px;
     border-bottom: 1px solid rgb(146, 144, 195);
     background-color: rgba(146, 144, 195, 0.1);
+    padding: 30px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 30px;
-    width: 100%;
 }
 
 #search-container {
@@ -138,6 +144,39 @@ header {
     }
 }
 
+#second-header-line {
+    width: 100%;
+}
+
+.header-menu {
+    width: 100%;
+    color: rgba(126, 124, 168, 0.7);
+    text-shadow: 0 0 2px rgba(255,255,255, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px;
+}
+
+.header-menu > li {
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid rgba(126, 124, 168, 0.7);
+    text-transform: uppercase;
+    &:last-child {
+        border: none;
+    }
+
+    &:hover {
+        /*background: rgba(146, 144, 195, 0.3);*/
+        color: rgba(255,255,255, 0.9);
+        text-shadow: 0 0 10px rgba(146, 144, 195, 0.9);
+        cursor: pointer;
+    }
+}
+
 #content {
     color: rgba(255,255,255, 0.8);
     padding: 20px;
@@ -147,12 +186,16 @@ header {
 
 }
 
-.main-info {
-    width: 50%;
+.main-info, .main-info-favorites {
     display: flex;
     align-items: center;
     justify-content: start;
 }
+
+.main-info {
+    width: 50%;
+}
+
 
 .second-info {
     display: flex;
@@ -282,23 +325,29 @@ header {
     }
 }
 
+
+.main-info-favorites {
+    width: 100%;
+}
+
 .favorite-controls {
     padding: 10px;
 }
 
-.favourite-image {
+.favourite-image, .main-image, .forecast-image {
     width: 80px;
+    filter: drop-shadow(0 0 5px rgba(255,255,255,0.2));
 }
 
 .favourite-place-name {
-    font-size: 18px;
+    font-size: 1.2em;
 }
 
 .favourite-temperature {
     font-size: 15px;
 }
 
-.favourite-condition-text {
+.favourite-condition-text, .forecast-condition-text {
     font-size: 15px;
 }
 
@@ -310,10 +359,45 @@ header {
         "sidebar"
         "footer";
       grid-template-columns: 1fr; 
-      grid-template-rows: 100px;
     }
   
     header, #sidebar, #content, .footer {
       width: 100%;
     }
   }
+
+
+  /* FORECAST 4-DAY */
+
+#forecast {
+    width: 100%;
+}
+
+#forecast > ul {
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 5px;
+}
+
+.forecast-day {
+    background: rgba(146, 144, 195, 0.3);
+    color: rgba(255,255,255, 0.9);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+.forecast-temperature {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.name-of-day {
+    font-size: 16px;
+    font-weight: normal;
+    text-align: center;
+}

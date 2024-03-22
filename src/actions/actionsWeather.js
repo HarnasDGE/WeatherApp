@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { SET_FAVORITE_PLACE, SET_NAME_OF_PLACE, FETCH_DATA_FAILURE, FETCH_DATA_SUCCESS, FETCH_DATA_REQUEST, APIKEY, APIKEY_OPENWEATHERAPI, IMAGES_FOR_TIME_OF_DAY, SET_TIME_OF_DAY, SET_IMAGE_LINK, APIKEY_UNSPLASH, FETCH_DATA_LOCALSTORE_SAVEDPLACES, FETCH_DATA_LOCALSTORE_FAVORITEPLACES, UPDATE_ALL_DATA, REMOVE_FAVORITE_PLACE, REFRESH_DATA, UPDATE_ALL_FAVORITE_PLACES } from '../constans/constans';
-import { weatherReducer } from '../reducers/weatherReducer';
+import { SET_FAVORITE_PLACE, SET_NAME_OF_PLACE, FETCH_DATA_FAILURE, FETCH_DATA_SUCCESS, FETCH_DATA_REQUEST, APIKEY_OPENWEATHERAPI, IMAGES_FOR_TIME_OF_DAY, SET_TIME_OF_DAY, SET_IMAGE_LINK, APIKEY_UNSPLASH, FETCH_DATA_LOCALSTORE_SAVEDPLACES, FETCH_DATA_LOCALSTORE_FAVORITEPLACES, UPDATE_ALL_DATA, REMOVE_FAVORITE_PLACE, UPDATE_ALL_FAVORITE_PLACES, CHANGE_CONTENT } from '../constans/constans';
+
 
 export const fetchDataRequest = () => ({
     type: FETCH_DATA_REQUEST
@@ -115,8 +115,14 @@ export const updateAllData = (allData) => ({
       timeOfDay: actualTimeOfDay[2]
     }
   }
+  
 
   export const updateAllFavoritePlaces = (newFavoritePlaces) => ({
     type: UPDATE_ALL_FAVORITE_PLACES,
     newFavoritePlaces,
 });
+
+export const changeContent = (titleContent) => ({
+  type: CHANGE_CONTENT,
+  titleContent
+})

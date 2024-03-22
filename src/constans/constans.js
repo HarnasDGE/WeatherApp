@@ -23,6 +23,8 @@ export const UPDATE_ALL_FAVORITE_PLACES = 'UPDATE_ALL_FAVORITE_PLACES';
 export const REFRESH_DATA = "REFRESH_DATA";
 export const REFRESH_FAVOURITE_PLACES = "REFRESH_FAVOURITE_PLACES";
 
+export const CHANGE_CONTENT = "CHANGE_CONTENT";
+
 export const IMAGES_FOR_TIME_OF_DAY = [
     [6, 10, "morning"],
     [11, 15, "midday"],

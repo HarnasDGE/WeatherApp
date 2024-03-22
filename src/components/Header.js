@@ -37,16 +37,31 @@ class Header extends React.Component {
         this.props.fetchPlaceInformation(this.state.place);
     }
 
+    changeContent = (e) => {
+        const value = e.target.getAttribute('data-value');
+        this.props.changeContent(value);
+    }
+
     render() {
         return (
         <header>
-            <div id="logo-app">
-                <img src={logo} alt="Logo"/>
-                <div className="pageTitle">Weather App</div>
+            <div id="main-header-line">
+                <div id="logo-app">
+                    <img src={logo} alt="Logo"/>
+                    <div className="pageTitle">Weather App</div>
+                </div>
+                <div id="search-container">
+                    <input type="text" id="search-input" onChange={this.placeOnChange} value={this.state.place}></input>
+                    <button id="search-submit"onClick={this.getDataFromPlace}><span className="material-symbols-outlined">search</span></button>
+                </div>
             </div>
-            <div id="search-container">
-                <input type="text" id="search-input" onChange={this.placeOnChange} value={this.state.place}></input>
-                <button id="search-submit"onClick={this.getDataFromPlace}><span className="material-symbols-outlined">search</span></button>
+            <div id="second-header-line">
+                <ul className="header-menu" onClick={this.changeContent}>
+                    <li data-value="Main Info">Main</li>
+                    <li data-value="4-day Forecast">4-day</li>
+                    <li data-value="16-day Forecast">16-day</li>
+                    <li data-value="Maps">Maps</li>
+                </ul>
             </div>
         </header> 
         )

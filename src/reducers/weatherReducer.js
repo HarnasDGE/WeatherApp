@@ -1,4 +1,4 @@
-import { SET_NAME_OF_PLACE, FETCH_DATA_FAILURE, FETCH_DATA_SUCCESS, SET_TIME_OF_DAY, SET_IMAGE_LINK, SET_FAVORITE_PLACE, FETCH_DATA_LOCALSTORE_SAVEDPLACES, FETCH_DATA_LOCALSTORE_FAVORITEPLACES, UPDATE_ALL_DATA, REMOVE_FAVORITE_PLACE, UPDATE_ALL_FAVORITE_PLACES } from "../constans/constans";
+import { SET_NAME_OF_PLACE, FETCH_DATA_FAILURE, FETCH_DATA_SUCCESS, SET_TIME_OF_DAY, SET_IMAGE_LINK, SET_FAVORITE_PLACE, FETCH_DATA_LOCALSTORE_SAVEDPLACES, FETCH_DATA_LOCALSTORE_FAVORITEPLACES, UPDATE_ALL_DATA, REMOVE_FAVORITE_PLACE, UPDATE_ALL_FAVORITE_PLACES, CHANGE_CONTENT } from "../constans/constans";
 
 const initialState = {
     data: [],
@@ -7,7 +7,8 @@ const initialState = {
     nameOfPlace: '',
     imageLink: '',
     favoritePlaces: [],
-    savedPlaces: []
+    savedPlaces: [],
+    actualContent: 'Main Info',
 }
 
 export const weatherReducer = (state = initialState, action) => {
@@ -51,8 +52,14 @@ export const weatherReducer = (state = initialState, action) => {
         case UPDATE_ALL_FAVORITE_PLACES:
             return {
                 ...state,
-                favoritePlaces: action.payload,
+                favoritePlaces: action.newFavoritePlaces,
             };
+
+        case CHANGE_CONTENT:
+            console.log(`actualContent: ${action.titleContent}`);
+            return {
+                ...state, actualContent: action.titleContent
+            }
 
         default: 
             return state;

@@ -14,7 +14,7 @@ class Favorite extends React.Component {
                 <ul>
                     {favoritePlaces.map((place, index) => (
                     <li key={`favPlace${index}`} className="favorite-place" onClick={() => this.props.fetchPlaceInformation(place.name)}>
-                        <div className="main-info">
+                        <div className="main-info-favorites">
                             {/* Zabezpieczenie przed undefined przy próbie dostępu do place.weather[0] i place.main */}
                             <img className="favourite-image" src={`https://openweathermap.org/img/wn/${place.weather?.[0]?.icon}@2x.png`} alt="Weather icon"/>
                             <div className="info">

@@ -35,10 +35,12 @@ class MainInfo extends React.Component {
     
     fetchDataForPlace = async (place) => {
         const {lat, lon} = place.coord;
+        const {name} = place;
+
         let newDataPlace = [];
           try {
             const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${APIKEY_OPENWEATHERAPI}`);
-            newDataPlace = response.data;
+            newDataPlace = {...response.data, name: name};
         } catch (error) {
             console.log(`(error) fetchDataForPlace ${error.message}`);
           }
@@ -74,7 +76,7 @@ class MainInfo extends React.Component {
         <div id="content">
             <div className="controls-bar">
                 <div className="title-container">
-                    Main Info 
+                {this.props.actualContent} 
                 </div>
                 <div id="controls-container">
                     <button className="control" id="favoriteBtn" onClick={this.setFavoritePlace}><span className="material-symbols-outlined">favorite</span></button>
@@ -82,7 +84,7 @@ class MainInfo extends React.Component {
                 </div>
             </div>
             <div className="main-info">
-                <img src={`https://openweathermap.org/img/wn/${weatherInformation.weather[0].icon}@2x.png`} alt="IMG"/>
+                <img className="main-image" src={`https://openweathermap.org/img/wn/${weatherInformation.weather[0].icon}@2x.png`} alt="IMG"/>
                 <div className="info">
                     <h2 className="place-name">{this.props.nameOfPlace ? this.props.nameOfPlace : weatherInformation.name}</h2>
                     <div className="second-info">
