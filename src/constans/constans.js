@@ -34,3 +34,12 @@ export const IMAGES_FOR_TIME_OF_DAY = [
     [23, 1, "midnight"],
     [2, 5, "moonset"]
 ]
+
+export const FETCH_PLACE_SUCCESS = "FETCH_PLACE_SUCCESS";
+export const FETCH_PLACE_FAILURE = "FETCH_DATA_FAILURE";
+export const FETCH_PLACE_REQUEST = "FETCH_PLACE_REQUEST";
+
+export const POPUP_INFO = "POPUP_INFO";
+export const POPUP_ALERT = "POPUP_ALERT";
+export const POPUP_ERROR = "POPUP_ERROR";
+export const POPUP_CONFRIM = "POPUP_CONFIRM";

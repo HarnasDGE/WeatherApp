@@ -3,8 +3,11 @@ import { connect } from 'react-redux';
 import { mapDispatchToProps, mapStateToProps } from '../containers/containerWeather';
 import Header from './Header';
 import Section from './Section';
-import Sidebar from './Sidebar'
+import Sidebar from './Sidebar';
+import Popup from './Popup';
+
 import { loadFromLocalStorage } from '../store/localStore';
+
 
 class App extends React.Component {
     constructor(props) {
@@ -34,15 +37,13 @@ class App extends React.Component {
         if (!this.state.images) {
             return <div>Loading...</div>;
         }
-        const images = this.state.images;
         const urlImageOfPlace = this.props.imageLink;
-        // <div id="main-container" style={{background: `url(${images[this.props.timeOfDay + '.png']}) no-repeat left top fixed `}}>
-
         return(    
             <div id="main-container" style={{background: `url(${urlImageOfPlace}) no-repeat left top fixed `}}>
                 <Header />
                 <Section />
                 <Sidebar />
+               
             </div>
         )
     }

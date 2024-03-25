@@ -27,3 +27,10 @@ export const convertUnixTimeToReadable = (time, timezoneOffsetInSeconds) => {
     // Formatowanie daty z powrotem do stringa i zwrócenie
     return date.toISOString().substring(0, 16);
 }
+
+export const calculateTimeAtRoute = (secondFromStart) => {
+  const today = new Date();
+  let millisecondsToAdd = secondFromStart * 1000; 
+  let newTime = new Date(today.getTime() + millisecondsToAdd);
+  return newTime.toTimeString().slice(0, 5);
+}

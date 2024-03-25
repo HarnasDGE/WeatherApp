@@ -1,14 +1,12 @@
 import { connect } from "react-redux";
 import { mapDispatchToProps, mapStateToProps } from "../containers/containerWeather";
 import React from "react";
-import axios from "axios";
+import axios, { all } from "axios";
 import { APIKEY_OPENWEATHERAPI, APIKEY_TOMTOM } from "../constans/constans";
 import { fetchWeatherApi } from 'openmeteo';
-import { roundUpToFifteenMinutes } from "./methods/timeMethods";
+import { calculateTimeAtRoute, roundUpToFifteenMinutes } from "./methods/timeMethods";
 import { getIconLink } from "./methods/iconsMethods";
 import AutoMap from "./AutoMap";
-
-
 
 class AlongTheRoad extends React.Component {
     constructor(props) {
@@ -89,20 +87,18 @@ class AlongTheRoad extends React.Component {
     }
 
     checkWeather = async () => {
-        this.setState( { loadingProcent: 50});
+        this.setState( { loadingProcent: 30});
         const routeCoords = this.state.roadDetails.routes[0].legs[0].points;
         const startCoords = `${routeCoords[0].latitude},${routeCoords[0].longitude}`;
         const interval = Math.floor(routeCoords.length / this.state.controlPoints + 1);
-        console.log(`Interval: ${interval}`);
         const selectedCoords = routeCoords.filter((_, index) => index % interval === 0 || index === routeCoords.length - 1);
-        console.log(`selectedCoords: ${selectedCoords}`);
 
         const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
         const weatherDetails = await Promise.all(selectedCoords.map(async (coord, index) => {
             await delay(index * 1000);
             this.setState((prevState) => {
-                return {loadingProcent: prevState.loadingProcent + Math.floor(50/prevState.controlPoints-1)};
+                return {loadingProcent: prevState.loadingProcent + Math.floor(40/prevState.controlPoints-1)};
               });
             const pointCoords = `${coord.latitude},${coord.longitude}`;
             const responseTomTom = await axios.get(`https://api.tomtom.com/routing/1/calculateRoute/${startCoords}:${pointCoords}/json?key=${APIKEY_TOMTOM}`);
@@ -164,9 +160,6 @@ class AlongTheRoad extends React.Component {
                 }
             }
 
-            console.log(`////////// WeatherData ///////`);
-            console.log(weather);
-
             const openWeatherMapResponse = await axios.get(`http://api.openweathermap.org/geo/1.0/reverse?lat=${coord.latitude}&lon=${coord.longitude}&limit=1&appid=${APIKEY_OPENWEATHERAPI}`);
             const locationName = openWeatherMapResponse.data[0]?.name || "Place on the road";
 
@@ -176,11 +169,11 @@ class AlongTheRoad extends React.Component {
                 travelTimeInSeconds: travelTimeInSeconds,
                 temperature: `${Math.round(weather.temperature_2m * 10) / 10}°C`,
                 code: weather.weather_code,
-                isDay: weather.isDay
+                isDay: weather.isDay,
+                lat: coord.latitude,
+                lon: coord.longitude,
             };
         }))
-        console.log(`///////// weatherDetails ////////`);
-        console.table(weatherDetails);
         return weatherDetails;
     }
 
@@ -196,8 +189,9 @@ class AlongTheRoad extends React.Component {
             </div>
         );
 
-        const allRoad = this.state.roadDetails.length > 0 ? this.state.roadDetails.routes[0].legs[0].points : [];
-        console.log(`AllROad: `, allRoad)
+        const allRoad = this.state.roadDetails.routes?.length >= 1 ? [...this.state.roadDetails.routes[0].legs[0].points] : [];
+        const allLocations = this.state.weatherAlongTheRoad?.length > 0 ? [...this.state.weatherAlongTheRoad] : [];
+
         return (
         <div id="content">
             <div className="controls-bar">
@@ -234,11 +228,6 @@ class AlongTheRoad extends React.Component {
                 </div>
                 <ul>
                     {this.state.weatherAlongTheRoad.map((place, index) => {
-                        const today = new Date();
-                        let millisecondsToAdd = place.travelTimeInSeconds * 1000; 
-                        let newTime = new Date(today.getTime() + millisecondsToAdd);
-                        let formattedTime = newTime.toTimeString().slice(0, 5);
-                
                         return (
                             <li key={`along-item${index}`} className="along-item">
                                 <div className="along-item-weather">
@@ -250,7 +239,7 @@ class AlongTheRoad extends React.Component {
                                 </div>
                                 <div className="along-item-route">
                                     <p className="route-km">{Math.floor(place.lengthInMeters/1000)} KM</p>
-                                    <p className="route-time">{formattedTime}</p>
+                                    <p className="route-time">{calculateTimeAtRoute(place.travelTimeInSeconds)}</p>
                                 </div>
                             </li>
                         )
@@ -259,7 +248,7 @@ class AlongTheRoad extends React.Component {
             </div>
 
             <div className="automap">
-                <AutoMap road={allRoad}/>
+                <AutoMap road={allRoad} locations={allLocations}/>
             </div>
         </div> 
         )

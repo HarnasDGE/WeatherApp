@@ -1,0 +1,40 @@
+
+.custom-icon {
+
+}
+
+.custom-icon-container {
+    display: flex;
+    align-items: center;
+    background: rgba(60, 98, 142, 0.8);
+    width: 180px;
+    border-radius: 25px 25px 25px 25px;
+
+  }
+  
+  .custom-icon-content {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .custom-icon img {
+    margin: 0 5px; /* Dostosuj odstęp między ikoną a tekstem */
+  }
+  
+  .custom-icon-text h2, .custom-icon-text p {
+    margin: 0;
+    padding: 0;
+    color: #FFF;
+    font-size: 12px; /* Dostosuj rozmiar czcionki tekstu */
+  }
+
+  .custom-icon-text p {
+    font-weight: bold;
+    font-size: 16px;
+  }
+  
+  .custom-icon-container-small {
+    background: rgba(60, 98, 142, 0.8);
+    width: 55px;
+    border-radius: 25px 25px 25px 25px;
+  }
