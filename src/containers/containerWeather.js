@@ -1,4 +1,4 @@
-import {  updateAllFavoritePlaces, updateAllData,fetchDataSuccess, fetchPlaceInformation, setFavoritePlace, fetchDataSavedPlacesLocalStore, fetchDataFavoritePlacesLocalStore, removeFavoritePlace, changeContent} from "../actions/actionsWeather";
+import {  updateAllFavoritePlaces, updateAllData,fetchDataSuccess, fetchPlaceInformation, setFavoritePlace, fetchDataSavedPlacesLocalStore, fetchDataFavoritePlacesLocalStore, removeFavoritePlace, changeContent, fetchForecast} from "../actions/actionsWeather";
 
 export const mapStateToProps = (state) => {
     return {
@@ -9,6 +9,7 @@ export const mapStateToProps = (state) => {
       imageLink: state.weatherState.imageLink,
       favoritePlaces: state.weatherState.favoritePlaces,
       actualContent: state.weatherState.actualContent,
+      forecast: state.weatherState.forecast,
     }
   };
   
@@ -16,13 +17,13 @@ export const mapStateToProps = (state) => {
     return {
       fetchPlaceInformation: (place) => dispatch(fetchPlaceInformation(place)),
       setFavoritePlace: () => dispatch(setFavoritePlace()),
-      fetchDataSavedPlacesLocalStore: (savedPlaces) => dispatch(fetchDataSavedPlacesLocalStore(savedPlaces)),
       fetchDataFavoritePlacesLocalStore: (favoritePlaces) => dispatch(fetchDataFavoritePlacesLocalStore(favoritePlaces)),
       fetchDataSuccess: (data) => dispatch(fetchDataSuccess(data)),
       updateAllData: (allData) => dispatch(updateAllData(allData)),
       removeFavoritePlace: (index) => dispatch(removeFavoritePlace(index)),
       updateAllFavoritePlaces: (updatedPlaces) => dispatch(updateAllFavoritePlaces(updatedPlaces)),
       changeContent: (titleContent) => dispatch(changeContent(titleContent)),
+      fetchForecast: (forecast) => dispatch(fetchForecast(forecast)),
     }
   };
   

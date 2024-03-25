@@ -44,7 +44,6 @@ class MainInfo extends React.Component {
         } catch (error) {
             console.log(`(error) fetchDataForPlace ${error.message}`);
           }
-
           return newDataPlace;
         };
 

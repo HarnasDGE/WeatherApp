@@ -1,4 +1,4 @@
-import { SET_NAME_OF_PLACE, FETCH_DATA_FAILURE, FETCH_DATA_SUCCESS, SET_TIME_OF_DAY, SET_IMAGE_LINK, SET_FAVORITE_PLACE, FETCH_DATA_LOCALSTORE_SAVEDPLACES, FETCH_DATA_LOCALSTORE_FAVORITEPLACES, UPDATE_ALL_DATA, REMOVE_FAVORITE_PLACE, UPDATE_ALL_FAVORITE_PLACES, CHANGE_CONTENT } from "../constans/constans";
+import { SET_NAME_OF_PLACE, FETCH_DATA_FAILURE, FETCH_DATA_SUCCESS, SET_TIME_OF_DAY, SET_IMAGE_LINK, SET_FAVORITE_PLACE, FETCH_DATA_LOCALSTORE_FAVORITEPLACES, UPDATE_ALL_DATA, REMOVE_FAVORITE_PLACE, UPDATE_ALL_FAVORITE_PLACES, CHANGE_CONTENT, FETCH_FORECAST } from "../constans/constans";
 
 const initialState = {
     data: [],
@@ -7,8 +7,8 @@ const initialState = {
     nameOfPlace: '',
     imageLink: '',
     favoritePlaces: [],
-    savedPlaces: [],
     actualContent: 'Main Info',
+    forecast: [],
 }
 
 export const weatherReducer = (state = initialState, action) => {
@@ -36,11 +36,12 @@ export const weatherReducer = (state = initialState, action) => {
         case REMOVE_FAVORITE_PLACE:
             return {...state, favoritePlaces: state.favoritePlaces.filter((_, index) => index !== action.index) }
 
-        case FETCH_DATA_LOCALSTORE_SAVEDPLACES:
-            return {...state, savedPlaces: action.savedPlaces}
         case FETCH_DATA_LOCALSTORE_FAVORITEPLACES:
             return {...state, favoritePlaces: Array.isArray(action.newFavoritePlaces) ? action.newFavoritePlaces : state.favoritePlaces
             }
+
+        case FETCH_FORECAST: 
+            return {...state, forecast: action.forecast}
 
         case UPDATE_ALL_DATA:
             return {

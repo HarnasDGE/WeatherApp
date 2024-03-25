@@ -58,9 +58,9 @@ class Header extends React.Component {
             <div id="second-header-line">
                 <ul className="header-menu" onClick={this.changeContent}>
                     <li data-value="Main Info">Main</li>
-                    <li data-value="4-day Forecast">4-day</li>
-                    <li data-value="16-day Forecast">16-day</li>
+                    <li data-value="Forecast">Forecast</li>
                     <li data-value="Maps">Maps</li>
+                    <li data-value="Along The Road">Along The Road</li>
                 </ul>
             </div>
         </header> 

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { SET_FAVORITE_PLACE, SET_NAME_OF_PLACE, FETCH_DATA_FAILURE, FETCH_DATA_SUCCESS, FETCH_DATA_REQUEST, APIKEY_OPENWEATHERAPI, IMAGES_FOR_TIME_OF_DAY, SET_TIME_OF_DAY, SET_IMAGE_LINK, APIKEY_UNSPLASH, FETCH_DATA_LOCALSTORE_SAVEDPLACES, FETCH_DATA_LOCALSTORE_FAVORITEPLACES, UPDATE_ALL_DATA, REMOVE_FAVORITE_PLACE, UPDATE_ALL_FAVORITE_PLACES, CHANGE_CONTENT } from '../constans/constans';
+import { SET_FAVORITE_PLACE, SET_NAME_OF_PLACE, FETCH_DATA_FAILURE, FETCH_DATA_SUCCESS, FETCH_DATA_REQUEST, APIKEY_OPENWEATHERAPI, IMAGES_FOR_TIME_OF_DAY, SET_TIME_OF_DAY, SET_IMAGE_LINK, APIKEY_UNSPLASH, FETCH_DATA_LOCALSTORE_SAVEDPLACES, FETCH_DATA_LOCALSTORE_FAVORITEPLACES, UPDATE_ALL_DATA, REMOVE_FAVORITE_PLACE, UPDATE_ALL_FAVORITE_PLACES, CHANGE_CONTENT, FETCH_FORECAST } from '../constans/constans';
 
 
 export const fetchDataRequest = () => ({
@@ -45,10 +45,6 @@ export const updateAllData = (allData) => ({
   allData
 })
 
-  export const fetchDataSavedPlacesLocalStore = (savedPlaces) => ({
-    type: FETCH_DATA_LOCALSTORE_SAVEDPLACES,
-    savedPlaces
-  });
 
   export const fetchDataFavoritePlacesLocalStore = (favoritePlaces) => ({
     type: FETCH_DATA_LOCALSTORE_FAVORITEPLACES,
@@ -78,6 +74,7 @@ export const updateAllData = (allData) => ({
         const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${placeInformation.lat}&lon=${placeInformation.lon}&appid=${APIKEY_OPENWEATHERAPI}`);
         dispatch(fetchDataSuccess(response.data));
         dispatch(setTimeOfDay(response.data.dt, response.data.timezone));
+        dispatch(fetchForecast(response.data));
       } catch (error) {
         dispatch(fetchDataFailure(error.message));
       }
@@ -96,7 +93,7 @@ export const updateAllData = (allData) => ({
         dispatch(fetchImageLink(response.data[0].name));
         dispatch(fetchDataPlace(placeInformation));
       } catch (error) {
-        console.log(`(error)fetchPlaceInformation` + error);
+        console.error(`(error)fetchPlaceInformation ` + error.message);
       }
     };
   }
@@ -126,3 +123,23 @@ export const changeContent = (titleContent) => ({
   type: CHANGE_CONTENT,
   titleContent
 })
+
+export const setForecast = (forecast) => ({
+  type: FETCH_FORECAST,
+  forecast
+})
+
+export const fetchForecast = (place) => {
+  const { lat, lon } = place.coord;
+   return async (dispatch) => {
+    const units = 'metric';
+    let forecast = [];
+    try {
+      const response = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${APIKEY_OPENWEATHERAPI}&units=${units}`);
+      forecast = response.data;
+      dispatch(setForecast(forecast));
+    } catch (error) {
+      console.log(`(error)fetchForecast` + error.message);
+    }
+  };
+}

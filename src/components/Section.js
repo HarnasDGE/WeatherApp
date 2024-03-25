@@ -2,9 +2,10 @@ import React from "react";
 import { connect } from "react-redux";
 import { mapDispatchToProps, mapStateToProps } from "../containers/containerWeather";
 import MainInfo from './MainInfo';
-import FourDay from './FourDay';
+import Forecast from './Forecast';
 import SixteenDay from './SixteenDay';
 import Maps from './Maps';
+import AlongTheRoad from './AlongTheRoad';
 
 class Section extends React.Component {
     constructor(props) {
@@ -16,12 +17,14 @@ class Section extends React.Component {
         switch(sectionName) {
             case "Main Info":
                 return (<MainInfo/>);
-            case "4-day Forecast":
-                return (<FourDay/>);
+            case "Forecast":
+                return (<Forecast/>);
             case "16-day Forecast":
                 return (<SixteenDay/>);
             case "Maps":
                 return (<Maps/>);
+            case "Along The Road":
+                return (<AlongTheRoad/>)
             default:
                 return (<MainInfo/>);
         }
