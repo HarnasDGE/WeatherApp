@@ -25,6 +25,7 @@ export const REFRESH_DATA = "REFRESH_DATA";
 export const REFRESH_FAVOURITE_PLACES = "REFRESH_FAVOURITE_PLACES";
 
 export const CHANGE_CONTENT = "CHANGE_CONTENT";
+export const SHOW_NOTIFICATION = "SHOW_NOTIFICATION";
 
 export const IMAGES_FOR_TIME_OF_DAY = [
     [6, 10, "morning"],
@@ -42,4 +43,4 @@ export const FETCH_PLACE_REQUEST = "FETCH_PLACE_REQUEST";
 export const POPUP_INFO = "POPUP_INFO";
 export const POPUP_ALERT = "POPUP_ALERT";
 export const POPUP_ERROR = "POPUP_ERROR";
-export const POPUP_CONFRIM = "POPUP_CONFIRM";
+export const POPUP_CONFIRM = "POPUP_CONFIRM";

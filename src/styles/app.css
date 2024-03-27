@@ -108,6 +108,10 @@ header {
 }
 
 #search-submit {
+    
+}
+
+.buttons-menu {
     background-color: rgba(146, 144, 195, 0.6);
     border: none;
     height: 40px;
@@ -693,7 +697,7 @@ input[type="range"] {
  
 
 #popup-display {
-    padding: 5px 15px;
+    padding: 5px 10px;
 
     position: fixed;
     top: 10px;
@@ -705,13 +709,20 @@ input[type="range"] {
 
     display: flex;
     align-items: center;
-    gap: 10px;
-
+    justify-content: center;
+    gap: 5px;
     font-size: 14px;
-    display: none;
+
+    .popup-display-text {
+
+    }
+
+    .popup-display-icon {
+
+    }
 }
 
-.alert-popup {
+.warning-popup {
     color: 	#FFA500;
 }
 
@@ -723,6 +734,6 @@ input[type="range"] {
     color: 	#FF0000;
 }
 
-.confirm-popup {
+.check_circle-popup {
     color: #32CD32;
 }

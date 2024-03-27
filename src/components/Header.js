@@ -2,6 +2,7 @@ import { connect } from "react-redux";
 import { mapDispatchToProps, mapStateToProps } from "../containers/containerWeather";
 import React from "react";
 import logo from '../images/logoweather.png';
+import { POPUP_ALERT, POPUP_CONFIRM, POPUP_ERROR, POPUP_INFO } from "../constans/constans";
 
 class Header extends React.Component {
     constructor(props) {
@@ -23,7 +24,7 @@ class Header extends React.Component {
 
     keyPressEnter = (e) => {
         if (e.key === "Enter") {
-            this.props.fetchPlaceInformation(this.state.place);
+           this.getDataFromPlace();
         } 
     }
 
@@ -34,12 +35,20 @@ class Header extends React.Component {
     }
 
     getDataFromPlace = () => {
-        this.props.fetchPlaceInformation(this.state.place);
+        if(this.state.place) {
+            this.props.fetchPlaceInformation(this.state.place);
+        } else {
+            this.props.showNotification(`Input is empty, please enter a value!`, POPUP_ALERT);
+        }
     }
 
     changeContent = (e) => {
         const value = e.target.getAttribute('data-value');
         this.props.changeContent(value);
+    }
+
+    showMenu = () => {
+
     }
 
     render() {
@@ -52,7 +61,8 @@ class Header extends React.Component {
                 </div>
                 <div id="search-container">
                     <input type="text" id="search-input" onChange={this.placeOnChange} value={this.state.place}></input>
-                    <button id="search-submit"onClick={this.getDataFromPlace}><span className="material-symbols-outlined">search</span></button>
+                    <button className="buttons-menu" id="search-submit"onClick={this.getDataFromPlace}><span className="material-symbols-outlined">search</span></button>
+                    <button className="buttons-menu" id="main-menu" onClick={this.showMenu}><span className="material-symbols-outlined">menu</span></button>
                 </div>
             </div>
             <div id="second-header-line">

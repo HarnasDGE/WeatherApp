@@ -68,6 +68,7 @@ class MainInfo extends React.Component {
     
 
     render() {
+        console.log(this.props.data);
         const weatherInformation = this.props.data;
         const loadingPageIcon = (<img src={loadingIcon} alt="Loading..."/>);
         const informationContainer = weatherInformation.name 

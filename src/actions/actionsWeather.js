@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { SET_FAVORITE_PLACE, SET_NAME_OF_PLACE, FETCH_DATA_FAILURE, FETCH_DATA_SUCCESS, FETCH_DATA_REQUEST, APIKEY_OPENWEATHERAPI, IMAGES_FOR_TIME_OF_DAY, SET_TIME_OF_DAY, SET_IMAGE_LINK, APIKEY_UNSPLASH, FETCH_DATA_LOCALSTORE_SAVEDPLACES, FETCH_DATA_LOCALSTORE_FAVORITEPLACES, UPDATE_ALL_DATA, REMOVE_FAVORITE_PLACE, UPDATE_ALL_FAVORITE_PLACES, CHANGE_CONTENT, FETCH_FORECAST } from '../constans/constans';
+import { SET_FAVORITE_PLACE, SET_NAME_OF_PLACE, FETCH_DATA_FAILURE, FETCH_DATA_SUCCESS, FETCH_DATA_REQUEST, APIKEY_OPENWEATHERAPI, IMAGES_FOR_TIME_OF_DAY, SET_TIME_OF_DAY, SET_IMAGE_LINK, APIKEY_UNSPLASH, FETCH_DATA_LOCALSTORE_SAVEDPLACES, FETCH_DATA_LOCALSTORE_FAVORITEPLACES, UPDATE_ALL_DATA, REMOVE_FAVORITE_PLACE, UPDATE_ALL_FAVORITE_PLACES, CHANGE_CONTENT, FETCH_FORECAST, SHOW_NOTIFICATION, POPUP_ERROR, POPUP_INFO } from '../constans/constans';
+import { showNotification } from './notificationActions';
 
 
 export const fetchDataRequest = () => ({
@@ -59,10 +60,10 @@ export const updateAllData = (allData) => ({
           const imageUrl = response.data.results[0].urls.regular;
           dispatch(setImageLink(imageUrl));
         } else {
-          console.log('No images found for the given keyword.');
+          dispatch(showNotification('No images found for this place!', POPUP_ERROR));
         }
       } catch (error) {
-        dispatch(fetchDataFailure(`(error)fetchImageLink ${error.message}`));
+        dispatch(showNotification('Error communicating with the Image API', POPUP_ERROR));
       }
     };
   }
@@ -76,7 +77,7 @@ export const updateAllData = (allData) => ({
         dispatch(setTimeOfDay(response.data.dt, response.data.timezone));
         dispatch(fetchForecast(response.data));
       } catch (error) {
-        dispatch(fetchDataFailure(error.message));
+        dispatch(showNotification('Error communicating with OpenWeather(Data from place', POPUP_ERROR));
       }
     };
   };
@@ -93,7 +94,7 @@ export const updateAllData = (allData) => ({
         dispatch(fetchImageLink(response.data[0].name));
         dispatch(fetchDataPlace(placeInformation));
       } catch (error) {
-        console.error(`(error)fetchPlaceInformation ` + error.message);
+        dispatch(showNotification('Error communicating with OpenWeather (Place Information)', POPUP_ERROR));
       }
     };
   }
@@ -138,8 +139,10 @@ export const fetchForecast = (place) => {
       const response = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${APIKEY_OPENWEATHERAPI}&units=${units}`);
       forecast = response.data;
       dispatch(setForecast(forecast));
+      dispatch(showNotification('The forecast has been loaded', POPUP_INFO));
     } catch (error) {
-      console.log(`(error)fetchForecast` + error.message);
+      dispatch(showNotification('Error communicating with OpenWeather (Forecast)', POPUP_ERROR));
     }
   };
 }
+

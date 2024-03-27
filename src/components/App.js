@@ -4,7 +4,7 @@ import { mapDispatchToProps, mapStateToProps } from '../containers/containerWeat
 import Header from './Header';
 import Section from './Section';
 import Sidebar from './Sidebar';
-import Popup from './Popup';
+import Notification from './Notifications';
 
 import { loadFromLocalStorage } from '../store/localStore';
 
@@ -43,7 +43,7 @@ class App extends React.Component {
                 <Header />
                 <Section />
                 <Sidebar />
-               
+                <Notification/>
             </div>
         )
     }
