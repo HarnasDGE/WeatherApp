@@ -1,11 +1,7 @@
 import axios from 'axios';
 import { SET_FAVORITE_PLACE, SET_NAME_OF_PLACE, FETCH_DATA_FAILURE, FETCH_DATA_SUCCESS, FETCH_DATA_REQUEST, APIKEY_OPENWEATHERAPI, IMAGES_FOR_TIME_OF_DAY, SET_TIME_OF_DAY, SET_IMAGE_LINK, APIKEY_UNSPLASH, FETCH_DATA_LOCALSTORE_SAVEDPLACES, FETCH_DATA_LOCALSTORE_FAVORITEPLACES, UPDATE_ALL_DATA, REMOVE_FAVORITE_PLACE, UPDATE_ALL_FAVORITE_PLACES, CHANGE_CONTENT, FETCH_FORECAST, SHOW_NOTIFICATION, POPUP_ERROR, POPUP_INFO } from '../constans/constans';
 import { showNotification } from './notificationActions';
-
-
-export const fetchDataRequest = () => ({
-    type: FETCH_DATA_REQUEST
-  });
+import { fetchWeatherApi } from 'openmeteo';
   
   export const fetchDataSuccess = (data) => ({
     type: FETCH_DATA_SUCCESS,
@@ -70,23 +66,97 @@ export const updateAllData = (allData) => ({
 
   export const fetchDataPlace = (placeInformation) => {
     return async (dispatch) => {
-      dispatch(fetchDataRequest());
+      const now = new Date();
+      const startDate = now.toISOString().substring(0,10);
+      let endDate = new Date();
+      endDate.setDate(now.getDate() + 4);
+      endDate = endDate.toISOString().substring(0,10);
+      
       try {
-        const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${placeInformation.lat}&lon=${placeInformation.lon}&appid=${APIKEY_OPENWEATHERAPI}`);
-        dispatch(fetchDataSuccess(response.data));
-        dispatch(setTimeOfDay(response.data.dt, response.data.timezone));
-        dispatch(fetchForecast(response.data));
+        const params = {
+          latitude: placeInformation.lat,
+          longitude: placeInformation.lon,
+          hourly: "temperature_2m,precipitation_probability,precipitation,rain,showers,snowfall,weather_code,cloud_cover",
+          daily: "weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,daylight_duration,sunshine_duration,uv_index_max,uv_index_clear_sky_max,precipitation_sum,rain_sum,showers_sum,snowfall_sum,precipitation_hours,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant",
+          start_date: startDate,
+          end_date: endDate
+        };
+  
+        const url = `https://api.open-meteo.com/v1/forecast`;
+        const responses = await fetchWeatherApi(url, params);
+        
+        const range = (start, stop, step) =>
+        Array.from({ length: (stop - start) / step }, (_, i) => start + i * step);
+
+        const response = responses[0];
+          // Attributes for timezone and location
+        const utcOffsetSeconds = response.utcOffsetSeconds();
+        const hourly = response.hourly();
+        const daily = response.daily();
+          // Note: The order of weather variables in the URL query and the indices below need to match!
+        const data = {
+          main: {
+            lat: placeInformation.lat,
+            lon: placeInformation.lon,
+            name: placeInformation.name,
+
+          },
+            hourly: {
+              time: range(Number(hourly.time()), Number(hourly.timeEnd()), hourly.interval()).map(
+                (t) => new Date((t + utcOffsetSeconds) * 1000)
+              ),
+              temperature2m: hourly.variables(0).valuesArray(),
+              precipitationProbability: hourly.variables(1).valuesArray(),
+              precipitation: hourly.variables(2).valuesArray(),
+              rain: hourly.variables(3).valuesArray(),
+              showers: hourly.variables(4).valuesArray(),
+              snowfall: hourly.variables(5).valuesArray(),
+              weatherCode: hourly.variables(6).valuesArray(),
+              cloudCover: hourly.variables(7).valuesArray(),
+            },
+            daily: {
+              time: range(Number(daily.time()), Number(daily.timeEnd()), daily.interval()).map(
+                (t) => new Date((t + utcOffsetSeconds) * 1000)
+              ),
+              weatherCode: daily.variables(0).valuesArray(),
+              temperature2mMax: daily.variables(1).valuesArray(),
+              temperature2mMin: daily.variables(2).valuesArray(),
+              sunrise: daily.variables(3).valuesArray(),
+              sunset: daily.variables(4).valuesArray(),
+              daylightDuration: daily.variables(5).valuesArray(),
+              sunshineDuration: daily.variables(6).valuesArray(),
+              uvIndexMax: daily.variables(7).valuesArray(),
+              uvIndexClearSkyMax: daily.variables(8).valuesArray(),
+              precipitationSum: daily.variables(9).valuesArray(),
+              rainSum: daily.variables(10).valuesArray(),
+              showersSum: daily.variables(11).valuesArray(),
+              snowfallSum: daily.variables(12).valuesArray(),
+              precipitationHours: daily.variables(13).valuesArray(),
+              precipitationProbabilityMax: daily.variables(14).valuesArray(),
+              windSpeed10mMax: daily.variables(15).valuesArray(),
+              windGusts10mMax: daily.variables(16).valuesArray(),
+              windDirection10mDominant: daily.variables(17).valuesArray(),
+            },
+          
+          };
+
+          console.log(`actionWeather`);
+          console.table(data);
+          dispatch(fetchDataSuccess(data));
       } catch (error) {
-        dispatch(showNotification('Error communicating with OpenWeather(Data from place', POPUP_ERROR));
+        dispatch(showNotification('Error communicating with Open-Meteo', POPUP_ERROR));
+        console.error(`Error from fetchWeatherDataForPlace: `, error.message);
       }
     };
   };
+  
 
   export const fetchPlaceInformation = (place) => {
     return async (dispatch) => {
       try {
         const response = await axios.get(`http://api.openweathermap.org/geo/1.0/direct?q=${place}&limit=1&appid=${APIKEY_OPENWEATHERAPI}`);
         const placeInformation = {
+          name: response.data[0].name,
           lat: response.data[0].lat,
           lon: response.data[0].lon
         }

@@ -180,3 +180,20 @@ export const getIconLink = (codeWeather, isDay) => {
     }
     return isDay ? findCode.dayIcon : findCode.nightIcon;
 }
+
+export const getIconLinkWithHour = (codeWeather, hour) => {
+  let findCode = weatherCodes.find(el => el.code === codeWeather);
+  if(!findCode) {
+    findCode = {
+      code: 100,
+      dayIcon: "https://openweathermap.org/img/wn/50n@2x.png",
+      nightIcon: "https://openweathermap.org/img/wn/50n@2x.png",
+      description: "Ohne Icon"
+    }
+  }
+
+  const isDate = hour instanceof Date;
+  const hourOfDay = isDate ? hour.getHours() : 12; 
+
+  return hourOfDay > 6 && hourOfDay < 18 ? findCode.dayIcon : findCode.nightIcon;
+}

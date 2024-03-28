@@ -235,6 +235,12 @@ header {
     background: rgba(146, 144, 195, 0.6);
 }
 
+.param {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .sunrise-sunset {
     padding-left: 10px;
     padding-bottom: 5px;

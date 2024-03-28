@@ -48,7 +48,8 @@ class Header extends React.Component {
     }
 
     showMenu = () => {
-
+        console.log(`this.props.data`);
+        console.table(this.props.data);
     }
 
     render() {

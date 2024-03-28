@@ -13,7 +13,7 @@ export const loadFromLocalStorage = () => {
     try {
         const serializedState = localStorage.getItem('weather');
         if (serializedState === null) return [];
-        return { weatherState: JSON.parse(serializedState).weatherState};
+        return { weatherState: JSON.parse(serializedState).weatherState.weatherState};
     } catch(e) {
       console.error(e);
       return [];
