@@ -1,7 +1,45 @@
 import { SET_NAME_OF_PLACE, FETCH_DATA_FAILURE, FETCH_DATA_SUCCESS, SET_TIME_OF_DAY, SET_IMAGE_LINK, SET_FAVORITE_PLACE, FETCH_DATA_LOCALSTORE_FAVORITEPLACES, UPDATE_ALL_DATA, REMOVE_FAVORITE_PLACE, UPDATE_ALL_FAVORITE_PLACES, CHANGE_CONTENT, FETCH_FORECAST } from "../constans/constans";
 
 const initialState = {
-    data: [],
+    data: {
+        daily: {
+            time: "?",
+            weatherCode: "?",
+            temperatureMax: "?",
+            temperatureMin: "?",
+            sunrise: "?",
+            sunset: "?",
+            daylightDuration: "?",
+            sunshineDuration: "?",
+            uvIndexMax: "?",
+            uvIndexClearSkyMax: "?",
+            precipitationSum: "?",
+            rainSum: "?",
+            showersSum: "?",
+            snowfallSum: "?",
+            precipitationHours: "?",
+            precipitationProbabilityMax: "?",
+            windSpeed: "?",
+            windGusts: "?",
+            windDirection: "?",
+        },
+        main: {
+            lat: "?",
+            lon: "?",
+            name: "?"
+        },
+        hourly: {
+            time: "?",
+            temperature2m: "?",
+            precipitationProbability: "?",
+            precipitation: "?",
+            rain: "?",
+            shower: "?",
+            snowfall: "?",
+            weatherCode: "?",
+            cloudCover: "?"
+        }
+    },
     errorMessage: '',
     timeOfDay: '',
     nameOfPlace: '',

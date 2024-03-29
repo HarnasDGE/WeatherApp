@@ -34,3 +34,11 @@ export const calculateTimeAtRoute = (secondFromStart) => {
   let newTime = new Date(today.getTime() + millisecondsToAdd);
   return newTime.toTimeString().slice(0, 5);
 }
+
+export const getNameDayFromData = (data) => {
+  const newDate = new Date(data);
+
+  const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  return daysOfWeek[newDate.getDay()];
+
+}

@@ -107,9 +107,6 @@ header {
     }
 }
 
-#search-submit {
-    
-}
 
 .buttons-menu {
     background-color: rgba(146, 144, 195, 0.6);
@@ -260,11 +257,19 @@ header {
 
 .actualTime {
     width: 50%;
-    font-family: "Orbitron", sans-serif;
-    font-size: 40px;
     display: flex;
-    align-items: center;
-    justify-content: flex-end;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+
+    .actual-date {
+        font-size: 15px;
+    }
+
+    .actual-day {
+        font-family: "Orbitron", sans-serif;
+        font-size: 20px;
+    }
 }
 
 .controls-bar {
@@ -381,101 +386,34 @@ header {
 
   /* FORECAST 4-DAY */
 
-.forecast-actual-day {
-    padding: 20px 0;
+
+.forecast {
     width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.forecast-actualTime {
-    font-family: "Orbitron", sans-serif;
-    font-size: 35px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.actual-day-name {
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-}
-
-#forecast {
-    width: 100%;
-    padding: 5px 0;
-}
-
-.forecast-details {
-    width: 100%;
-    margin: 3px;
-    display: flex;
-    gap: 5px;
-}
-
-.forecast-detail {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 2px 5px;
-    border-right: 1px solid rgba(255,255,255, 0.5);
-    span {
-        color: #FFF;
-    }
-    &:last-child {
-        border: none;
-    }
-}
-
-#forecast > ul {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    list-style: none;
-
-    .forecast-active-item-list {
-        width: 100%;
-    }
-
-    .forecast-item-list {
-        background: rgba(146, 144, 195, 0.3);
-        color: rgba(255,255,255, 0.9);
+    ul {
         width: 100%;
         display: flex;
         align-items: center;
-        justify-content: start;
-        transition: all 0.3s ease-in;
-        &:hover {
-            cursor: pointer;
-            background: rgba(146, 144, 195, 0.7);
+        justify-content: center;
+        gap: 10px;
+        list-style-type: none;
+        padding: 15px;
+        li {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 25%;
+            padding: 15px;
+            background-color: rgba(126, 124, 168, 0.7);
+            box-shadow: rgba(255, 255, 2550, 0.15) 1.95px 1.95px 2.6px;
+
+            &:hover {
+                cursor: pointer;
+                opacity: 0.9;
+            }
         }
+
     }
-}
-
-
-
-.forecast-temperature {
-    font-size: 24px;
-    font-weight: bold;
-    text-align: center;
-}
-
-.name-of-day {
-    font-size: 16px;
-    font-weight: normal;
-    text-align: center;
-}
-
-.main-info-forecast {
-    height: 50px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: start;
-    gap: 10px;
 }
 
 /* MAPS */
@@ -719,13 +657,7 @@ input[type="range"] {
     gap: 5px;
     font-size: 14px;
 
-    .popup-display-text {
 
-    }
-
-    .popup-display-icon {
-
-    }
 }
 
 .warning-popup {
@@ -742,4 +674,109 @@ input[type="range"] {
 
 .check_circle-popup {
     color: #32CD32;
+}
+
+.graph {
+    display: flex;
+}
+
+/* CheckBoxes */
+.checkbox-wrapper-2 {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    label {
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        gap: 5px;
+    }
+}
+  .checkbox-wrapper-2 .ikxBAC {
+    appearance: none;
+    background-color: #a0a0a0;
+    border-radius: 72px;
+    border-style: none;
+    flex-shrink: 0;
+    height: 20px;
+    margin: 0;
+    position: relative;
+    width: 30px;
+  }
+
+  .checkbox-wrapper-2 .ikxBAC::before {
+    bottom: -6px;
+    content: "";
+    left: -6px;
+    position: absolute;
+    right: -6px;
+    top: -6px;
+  }
+
+  .checkbox-wrapper-2 .ikxBAC,
+  .checkbox-wrapper-2 .ikxBAC::after {
+    transition: all 100ms ease-out;
+  }
+
+  .checkbox-wrapper-2 .ikxBAC::after {
+    background-color: #fff;
+    border-radius: 50%;
+    content: "";
+    height: 14px;
+    left: 3px;
+    position: absolute;
+    top: 3px;
+    width: 14px;
+  }
+
+  .checkbox-wrapper-2 input[type=checkbox] {
+    cursor: default;
+  }
+
+  .checkbox-wrapper-2 .ikxBAC:hover {
+    background-color: #c9cbcd;
+    transition-duration: 0s;
+  }
+
+  .checkbox-wrapper-2 .ikxBAC:checked {
+    background-color: #6e79d6;
+  }
+
+  .checkbox-wrapper-2 .ikxBAC:checked::after {
+    background-color: #fff;
+    left: 13px;
+  }
+
+  .checkbox-wrapper-2 :focus:not(.focus-visible) {
+    outline: 0;
+  }
+
+  .checkbox-wrapper-2 .ikxBAC:checked:hover {
+    opacity: 0.9;
+  }
+
+.checkbox-wrapper-2 {
+  .temperature-label {
+    color: #ff4500;
+  }
+
+  .temperature-label input:checked {
+    background-color: #ff4500;
+  }
+
+  .rainfall-label {
+    color: steelblue;
+  }
+
+  .rainfall-label input:checked {
+    background-color: steelblue;
+  }
+
+  .clouds-label {
+    color: #D0AF00;
+  }
+
+  .clouds-label input:checked {
+    background-color: #D0AF00;
+  }
 }

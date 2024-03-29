@@ -193,7 +193,7 @@ export const getIconLinkWithHour = (codeWeather, hour) => {
   }
 
   const isDate = hour instanceof Date;
-  const hourOfDay = isDate ? hour.getHours() : 12; 
+  let hourOfDay = isDate ? hour.getHours() : 12; 
 
-  return hourOfDay > 6 && hourOfDay < 18 ? findCode.dayIcon : findCode.nightIcon;
+  return hourOfDay > 7 && hourOfDay < 20 ? findCode.dayIcon : findCode.nightIcon;
 }

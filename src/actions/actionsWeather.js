@@ -93,51 +93,50 @@ export const updateAllData = (allData) => ({
         const utcOffsetSeconds = response.utcOffsetSeconds();
         const hourly = response.hourly();
         const daily = response.daily();
+        const defaultArr = ["?", "?", "?", "?", "?"];
           // Note: The order of weather variables in the URL query and the indices below need to match!
         const data = {
           main: {
-            lat: placeInformation.lat,
-            lon: placeInformation.lon,
-            name: placeInformation.name,
-
+            lat: placeInformation.lat.toString().substring(0,5) || "?",
+            lon: placeInformation.lon.toString().substring(0,5) || "?",
+            name: placeInformation.name || "?",
           },
             hourly: {
               time: range(Number(hourly.time()), Number(hourly.timeEnd()), hourly.interval()).map(
-                (t) => new Date((t + utcOffsetSeconds) * 1000)
+                (t) => new Date((t + utcOffsetSeconds) * 1000).toISOString()
               ),
-              temperature2m: hourly.variables(0).valuesArray(),
-              precipitationProbability: hourly.variables(1).valuesArray(),
-              precipitation: hourly.variables(2).valuesArray(),
-              rain: hourly.variables(3).valuesArray(),
-              showers: hourly.variables(4).valuesArray(),
-              snowfall: hourly.variables(5).valuesArray(),
-              weatherCode: hourly.variables(6).valuesArray(),
-              cloudCover: hourly.variables(7).valuesArray(),
+              temperature2m: hourly.variables(0).valuesArray() || [],
+              precipitationProbability: hourly.variables(1).valuesArray() || [],
+              precipitation: hourly.variables(2).valuesArray() || [],
+              rain: hourly.variables(3).valuesArray() || [],
+              showers: hourly.variables(4).valuesArray() || [],
+              snowfall: hourly.variables(5).valuesArray() || [],
+              weatherCode: hourly.variables(6).valuesArray() || [],
+              cloudCover: hourly.variables(7).valuesArray() || [],
             },
             daily: {
               time: range(Number(daily.time()), Number(daily.timeEnd()), daily.interval()).map(
-                (t) => new Date((t + utcOffsetSeconds) * 1000)
+                (t) => new Date((t + utcOffsetSeconds) * 1000).toISOString()
               ),
-              weatherCode: daily.variables(0).valuesArray(),
-              temperature2mMax: daily.variables(1).valuesArray(),
-              temperature2mMin: daily.variables(2).valuesArray(),
-              sunrise: daily.variables(3).valuesArray(),
-              sunset: daily.variables(4).valuesArray(),
-              daylightDuration: daily.variables(5).valuesArray(),
-              sunshineDuration: daily.variables(6).valuesArray(),
-              uvIndexMax: daily.variables(7).valuesArray(),
-              uvIndexClearSkyMax: daily.variables(8).valuesArray(),
-              precipitationSum: daily.variables(9).valuesArray(),
-              rainSum: daily.variables(10).valuesArray(),
-              showersSum: daily.variables(11).valuesArray(),
-              snowfallSum: daily.variables(12).valuesArray(),
-              precipitationHours: daily.variables(13).valuesArray(),
-              precipitationProbabilityMax: daily.variables(14).valuesArray(),
-              windSpeed10mMax: daily.variables(15).valuesArray(),
-              windGusts10mMax: daily.variables(16).valuesArray(),
-              windDirection10mDominant: daily.variables(17).valuesArray(),
+              weatherCode: daily.variables(0).valuesArray() || defaultArr,
+              temperatureMax: daily.variables(1).valuesArray() || defaultArr,
+              temperatureMin: daily.variables(2).valuesArray() || defaultArr,
+              sunrise: daily.variables(3).valuesArray() || defaultArr,
+              sunset: daily.variables(4).valuesArray() || defaultArr,
+              daylightDuration: daily.variables(5).valuesArray() || defaultArr,
+              sunshineDuration: daily.variables(6).valuesArray() || defaultArr,
+              uvIndexMax: daily.variables(7).valuesArray().toString().substring(0,4) || defaultArr,
+              uvIndexClearSkyMax: daily.variables(8).valuesArray().toString().substring(0,4) || defaultArr,
+              precipitationSum: daily.variables(9).valuesArray() || defaultArr,
+              rainSum: daily.variables(10).valuesArray() || defaultArr,
+              showersSum: daily.variables(11).valuesArray() || defaultArr,
+              snowfallSum: daily.variables(12).valuesArray() || defaultArr,
+              precipitationHours: daily.variables(13).valuesArray() || defaultArr,
+              precipitationProbabilityMax: daily.variables(14).valuesArray() || defaultArr,
+              windSpeedMax: daily.variables(15).valuesArray().toString().substring(0,5) || defaultArr,
+              windGustsMax: daily.variables(16).valuesArray() || defaultArr,
+              windDirectionDominant: daily.variables(17).valuesArray() || defaultArr,
             },
-          
           };
 
           console.log(`actionWeather`);

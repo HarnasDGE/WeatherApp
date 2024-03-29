@@ -17,10 +17,8 @@ class Section extends React.Component {
         switch(sectionName) {
             case "Main Info":
                 return (<MainInfo/>);
-            case "Forecast":
-                return (<Forecast/>);
-            case "16-day Forecast":
-                return (<SixteenDay/>);
+           /* case "Forecast":
+                return (<Forecast/>);*/
             case "Maps":
                 return (<Maps/>);
             case "Along The Road":
