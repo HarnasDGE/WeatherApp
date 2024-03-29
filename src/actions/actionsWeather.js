@@ -100,6 +100,7 @@ export const updateAllData = (allData) => ({
             lat: placeInformation.lat.toString().substring(0,5) || "?",
             lon: placeInformation.lon.toString().substring(0,5) || "?",
             name: placeInformation.name || "?",
+            countryCode: placeInformation.countryCode || "?"
           },
             hourly: {
               time: range(Number(hourly.time()), Number(hourly.timeEnd()), hourly.interval()).map(
@@ -153,14 +154,16 @@ export const updateAllData = (allData) => ({
   export const fetchPlaceInformation = (place) => {
     return async (dispatch) => {
       try {
-        const response = await axios.get(`http://api.openweathermap.org/geo/1.0/direct?q=${place}&limit=1&appid=${APIKEY_OPENWEATHERAPI}`);
+        const response = await axios.get(`https://geocoding-api.open-meteo.com/v1/search?name=${place}&count=1&language=en&format=json`);
         const placeInformation = {
-          name: response.data[0].name,
-          lat: response.data[0].lat,
-          lon: response.data[0].lon
+          name: response.data.results[0].name,
+          lat: response.data.results[0].latitude,
+          lon: response.data.results[0].longitude,
+          countryCode: response.data.results[0].country_code,
+          country: response.data.results[0].country,
         }
-        dispatch(setNameOfPlace(response.data[0].name));
-        dispatch(fetchImageLink(response.data[0].name));
+        dispatch(setNameOfPlace(response.data.results[0].name));
+        dispatch(fetchImageLink(response.data.results[0].name));
         dispatch(fetchDataPlace(placeInformation));
       } catch (error) {
         dispatch(showNotification('Error communicating with OpenWeather (Place Information)', POPUP_ERROR));

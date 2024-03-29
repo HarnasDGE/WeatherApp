@@ -99,7 +99,7 @@ class MainInfo extends React.Component {
             name: placeInformation.name,
             lat: placeInformation.lat,
             lon: placeInformation.lon,
-
+            countryCode: placeInformation.countryCode
         }
     }
     
@@ -121,7 +121,7 @@ class MainInfo extends React.Component {
             <div className="main-info">
                 <img className="main-image" src={getIconLinkWithHour(weather.weatherCode, new Date())} alt="IMG"/>
                 <div className="info">
-                    <h2 className="place-name">{weather.name}</h2>
+                    <h2 className="place-name">{weather.name}<i>[{weather.countryCode}]</i></h2>
                     <div className="second-info">
                         <p className="temperature">{`${Math.round(weather.temperatureMax * 10) / 10}°C`}</p>
                         <p className="condition-text">{`${Math.round(weather.temperatureMin * 10) / 10}°C`}</p>
