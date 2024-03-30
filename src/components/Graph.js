@@ -65,7 +65,7 @@ class Graph extends React.Component {
             hour: hour.substring(11,16),
             temperature: Math.round(temperatureLevels[index]*10)/10,
             precipitation: precipitationLevels[index],
-            icon: getIconLinkWithHour(weatherCodes[index], hour),
+            icon: getIconLinkWithHour(weatherCodes[index], new Date(hour)),
             cloud: cloudLevels[index]
         }));
 
@@ -112,7 +112,7 @@ class Graph extends React.Component {
         .attr("y", y(140))
         .attr("width", x.bandwidth())
         .attr("height", height + 40)
-        .attr("fill", d => d.hour === actualHour ? "rgba(255,255,255,0.3" : "none");
+        .attr("fill", d => d.hour === actualHour && this.props.day === 0 ? "rgba(255,255,255,0.3" : "none");
 
 
     if(this.state.isPercipitation) { // Dodanie słupków
@@ -189,7 +189,7 @@ if(this.state.isTemperature) {
         .datum(forecast) // Przekazanie danych temperatury
         .attr("class", "temperature-line") // Dodanie klasy dla potencjalnego łatwiejszego usuwania
         .attr("fill", "none")
-        .attr("stroke", "orangered") // Kolor linii
+        .attr("stroke", "#01e97d") // Kolor linii
         .attr("stroke-width", 2)
         .attr("d", lineGenerator);
 
@@ -200,7 +200,7 @@ if(this.state.isTemperature) {
         .attr("cx", d => x(d.hour) + x.bandwidth() / 2)
         .attr("cy", d => yTemperature(d.temperature))
         .attr("r", 3) // Promień kropki
-        .style("fill", "#ff4500"); // Kolor kropki
+        .style("fill", "#01e97d"); // Kolor kropki
 
 
     svg.selectAll(".temperatureText")
@@ -211,7 +211,7 @@ if(this.state.isTemperature) {
         .attr("y", d => yTemperature(d.temperature) - 10) // Aby tekst był trochę powyżej kropki
         .text(d => `${d.temperature}`) // Tekst do wyświetlenia
         .attr("text-anchor", "middle") // Centruje tekst względem punktu
-        .style("fill", "#ff4500") // Kolor tekstu
+        .style("fill", "#01e97d") // Kolor tekstu
         .style("font-size", "12px"); // Rozmiar czcionki
 }
     

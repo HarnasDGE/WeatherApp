@@ -21,8 +21,9 @@ class Forecast extends React.Component {
                             <li key={`fore${index}`} onClick={() => this.props.changeDay(index)}> 
                                 <h3>{getNameDayFromData(time)}</h3>
                                 <img src={getIconLink(weather.weatherCode[index], true)} alt="Weather Img"/>
-                                <p>{Math.round(weather.temperatureMax[index] * 10)/10} °C</p>
-                                <p>{Math.round(weather.precipitationSum[index] * 10)/10} %</p>
+                                <p><span className="max-temperature">{Math.round(weather.temperatureMax[index] * 10)/10}°C</span></p>
+                                <p><span className="min-temperature">{Math.round(weather.temperatureMin[index] * 10)/10}</span></p>
+                                <p className="rain"><span className="material-symbols-outlined">rainy</span>{Math.round(weather.precipitationSum[index] * 10)/10} %</p>
                             </li>
                         )
                     })}

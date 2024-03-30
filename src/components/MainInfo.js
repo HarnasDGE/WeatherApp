@@ -106,7 +106,7 @@ class MainInfo extends React.Component {
 
     render() {
         const weather = this.loadWeatherInformation(this.state.actualDay);
-        
+        const flagUrl = `https://flagcdn.com/16x12/${weather.countryCode.toLowerCase()}.png`
        return (
        <div id="content">
             <div className="controls-bar">
@@ -121,7 +121,7 @@ class MainInfo extends React.Component {
             <div className="main-info">
                 <img className="main-image" src={getIconLinkWithHour(weather.weatherCode, new Date())} alt="IMG"/>
                 <div className="info">
-                    <h2 className="place-name">{weather.name}<i>[{weather.countryCode}]</i></h2>
+                    <h2 className="place-name"><img src={flagUrl} width="24" height="16" alt={weather.countryCode}/> {weather.name}</h2>
                     <div className="second-info">
                         <p className="temperature">{`${Math.round(weather.temperatureMax * 10) / 10}°C`}</p>
                         <p className="condition-text">{`${Math.round(weather.temperatureMin * 10) / 10}°C`}</p>
@@ -142,7 +142,7 @@ class MainInfo extends React.Component {
                 </div>
                 <div className="flex-and-left">
                 <span className="hpa">UV</span>
-                <p className="param">{weather.uv_index_max}/{weather.uv_index_clear_sky_max}</p>
+                <p className="param">{Math.round(weather.uv_index_max * 10) / 10}/{Math.round(weather.uv_index_clear_sky_max * 10) / 10}</p>
                 </div>
                 <div className="flex-and-left">
                     <span className="material-symbols-outlined">rainy</span>
@@ -150,7 +150,7 @@ class MainInfo extends React.Component {
                 </div>
                 <div className="flex-and-left">
                     <span className="material-symbols-outlined">wind_power</span>
-                    <p className="param">{weather.wind_speed} km/h <span className="material-symbols-outlined" style={{transform: `rotate(${weather.wind_direction}deg) scale(0.7)`}}>north</span></p>
+                    <p className="param">{Math.round(weather.wind_speed * 10) / 10} km/h <span className="material-symbols-outlined" style={{transform: `rotate(${weather.wind_direction}deg) scale(0.7)`}}>north</span></p>
                 </div>
             </div>
         </div>

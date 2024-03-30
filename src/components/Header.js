@@ -61,7 +61,7 @@ class Header extends React.Component {
                     <div className="pageTitle">Weather App</div>
                 </div>
                 <div id="search-container">
-                    <input type="text" id="search-input" onChange={this.placeOnChange} value={this.state.place}></input>
+                    <input type="text" id="search-input" onChange={this.placeOnChange} value={this.state.place} placeholder="Enter place..."></input>
                     <button className="buttons-menu" id="search-submit"onClick={this.getDataFromPlace}><span className="material-symbols-outlined">search</span></button>
                     <button className="buttons-menu" id="main-menu" onClick={this.showMenu}><span className="material-symbols-outlined">menu</span></button>
                 </div>
