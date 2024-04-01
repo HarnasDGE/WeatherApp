@@ -58,10 +58,10 @@ class Header extends React.Component {
             <div id="main-header-line">
                 <div id="logo-app">
                     <img src={logo} alt="Logo"/>
-                    <div className="pageTitle">Weather App</div>
+                    <div className="pageTitle gradient-text">Weather App</div>
                 </div>
                 <div id="search-container">
-                    <input type="text" id="search-input" onChange={this.placeOnChange} value={this.state.place} placeholder="Enter place..."></input>
+                    <input type="text" className="search-input" onChange={this.placeOnChange} value={this.state.place} placeholder="Enter place..."></input>
                     <button className="buttons-menu" id="search-submit"onClick={this.getDataFromPlace}><span className="material-symbols-outlined">search</span></button>
                     <button className="buttons-menu" id="main-menu" onClick={this.showMenu}><span className="material-symbols-outlined">menu</span></button>
                 </div>
@@ -69,7 +69,6 @@ class Header extends React.Component {
             <div id="second-header-line">
                 <ul className="header-menu" onClick={this.changeContent}>
                     <li data-value="Main Info">Main</li>
-                    <li data-value="Forecast">Forecast</li>
                     <li data-value="Maps">Maps</li>
                     <li data-value="Along The Road">Along The Road</li>
                 </ul>

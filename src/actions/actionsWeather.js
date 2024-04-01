@@ -24,7 +24,7 @@ import { fetchWeatherApi } from 'openmeteo';
   })
 
   export const setFavoritePlace = () => {
-
+    
     return {
       type: SET_FAVORITE_PLACE
     }

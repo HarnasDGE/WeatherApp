@@ -3,6 +3,8 @@ import { mapDispatchToProps, mapStateToProps } from "../containers/containerWeat
 import React from "react";
 import * as d3 from 'd3';
 import { getIconLinkWithHour } from "./methods/iconsMethods";
+import Notification from './Notifications';
+import { POPUP_CONFIRM } from '../constans/constans';
 
 
 class Graph extends React.Component {
@@ -11,21 +13,32 @@ class Graph extends React.Component {
         this.state = {
             isTemperature: true,
             isPercipitation: true,
-            isClouds: false
+            isClouds: false,
+            windowWidth: window.innerWidth
         }
         this.graphContainerRef = React.createRef(); 
     }
 
+    handleResize = () => {
+        this.setState({ windowWidth: window.innerWidth });
+    }
+
     componentDidMount() {
+        window.addEventListener('resize', this.handleResize);
         this.drawGraph();
     }
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.handleResize);
+    }
+
 
     componentDidUpdate(prevProps, prevState) {
         if (this.props.data !== prevProps.data || 
             this.state.isTemperature !== prevState.isTemperature || 
             this.state.isPercipitation !== prevState.isPercipitation || 
             this.state.isClouds !== prevState.isClouds ||
-            this.props.day !== prevProps.day) {
+            this.props.day !== prevProps.day ||
+            this.state.windowWidth !== prevProps.windowWidth) {
             d3.select("#precipitation").select("svg").remove(); // Usuń istniejący wykres
             this.drawGraph(); // Rysuj wykres ponownie
         }
@@ -44,7 +57,9 @@ class Graph extends React.Component {
     }
 
     drawGraph = () => {
+        
     if(!this.props.data.hourly) return;
+
     d3.select("#precipitation svg").remove();
     
     const actualDay = this.props.day;
@@ -233,6 +248,8 @@ if(this.state.isTemperature) {
     }
 
     render() {
+        const { windowWidth } = this.state;
+
         return (
         <div className="graph" style={{width: "100%", height: "200px"}}>
             <div id="precipitation" style={{width: "80%", height: "100%"}}  ref={this.graphContainerRef}></div> 

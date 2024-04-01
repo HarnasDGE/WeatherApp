@@ -1,43 +1,47 @@
 import { SET_NAME_OF_PLACE, FETCH_DATA_FAILURE, FETCH_DATA_SUCCESS, SET_TIME_OF_DAY, SET_IMAGE_LINK, SET_FAVORITE_PLACE, FETCH_DATA_LOCALSTORE_FAVORITEPLACES, UPDATE_ALL_DATA, REMOVE_FAVORITE_PLACE, UPDATE_ALL_FAVORITE_PLACES, CHANGE_CONTENT, FETCH_FORECAST } from "../constans/constans";
 
+const defaultState = ["?", "?", "?", "?", "?"];
+
 const initialState = {
     data: {
         daily: {
-            time: "?",
-            weatherCode: "?",
-            temperatureMax: "?",
-            temperatureMin: "?",
-            sunrise: "?",
-            sunset: "?",
-            daylightDuration: "?",
-            sunshineDuration: "?",
-            uvIndexMax: "?",
-            uvIndexClearSkyMax: "?",
-            precipitationSum: "?",
-            rainSum: "?",
-            showersSum: "?",
-            snowfallSum: "?",
-            precipitationHours: "?",
-            precipitationProbabilityMax: "?",
-            windSpeed: "?",
-            windGusts: "?",
-            windDirection: "?",
+            time: defaultState,
+            weatherCode: defaultState,
+            temperatureMax: defaultState,
+            temperatureMin: defaultState,
+            sunrise: defaultState,
+            sunset: defaultState,
+            daylightDuration: defaultState,
+            sunshineDuration: defaultState,
+            uvIndexMax: defaultState,
+            uvIndexClearSkyMax: defaultState,
+            precipitationSum: defaultState,
+            rainSum: defaultState,
+            showersSum: defaultState,
+            snowfallSum: defaultState,
+            precipitationHours: defaultState,
+            precipitationProbabilityMax: defaultState,
+            windSpeed: defaultState,
+            windGusts: defaultState,
+            windDirection: defaultState,
         },
         main: {
             lat: "?",
             lon: "?",
-            name: "?"
+            name: "?",
+            country: "?",
+            countryCode: "?"
         },
         hourly: {
-            time: "?",
-            temperature2m: "?",
-            precipitationProbability: "?",
-            precipitation: "?",
-            rain: "?",
-            shower: "?",
-            snowfall: "?",
-            weatherCode: "?",
-            cloudCover: "?"
+            time: defaultState,
+            temperature2m: defaultState,
+            precipitationProbability: defaultState,
+            precipitation: defaultState,
+            rain: defaultState,
+            shower: defaultState,
+            snowfall: defaultState,
+            weatherCode: defaultState,
+            cloudCover: defaultState
         }
     },
     errorMessage: '',
@@ -50,6 +54,8 @@ const initialState = {
 }
 
 export const weatherReducer = (state = initialState, action) => {
+    console.log(`Load weatherReducer.js`)
+
     switch(action.type) {
         case FETCH_DATA_SUCCESS:
             return {...state, data: action.payload}
@@ -65,10 +71,7 @@ export const weatherReducer = (state = initialState, action) => {
         case SET_FAVORITE_PLACE: 
             return {
                 ...state,
-                favoritePlaces: [
-                    ...state.favoritePlaces, 
-                    { ...state.data, name: state.nameOfPlace } // Dodanie obiektu z zmienioną wartością name
-                ]
+                favoritePlaces: [...state.favoritePlaces, state.data ]
             };
         case REMOVE_FAVORITE_PLACE:
             return {...state, favoritePlaces: state.favoritePlaces.filter((_, index) => index !== action.index) }

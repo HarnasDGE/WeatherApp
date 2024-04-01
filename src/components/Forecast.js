@@ -12,11 +12,9 @@ class Forecast extends React.Component {
     render() {      
         const weather = this.props.data.daily;  
         return (
-            
             <div className="forecast">
                 <ul>
                     {weather.time.map((time, index) => {
-
                         return (
                             <li key={`fore${index}`} onClick={() => this.props.changeDay(index)}> 
                                 <h3>{getNameDayFromData(time)}</h3>

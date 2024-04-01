@@ -7,6 +7,7 @@ import axios from "axios";
 import { getIconLinkWithHour } from "./methods/iconsMethods";
 import Graph from './Graph';
 import Forecast from './Forecast';
+import DetailsWeather from './DetailsWeather';
 import { getNameDayFromData } from "./methods/timeMethods";
 
 class MainInfo extends React.Component {
@@ -28,7 +29,7 @@ class MainInfo extends React.Component {
       }
 
       setFavoritePlace = () => {
-        const checkActualPlaces = this.props.favoritePlaces.find(place => place.name === this.props.nameOfPlace);
+        const checkActualPlaces = this.props.favoritePlaces.find(place => place.main.name === this.props.data.main.name);
             if(!checkActualPlaces) {
             this.props.setFavoritePlace();
         }
@@ -75,7 +76,7 @@ class MainInfo extends React.Component {
     loadWeatherInformation = (day) => {
         const weatherInformation = this.props.data.daily;
         const placeInformation = this.props.data.main;
-
+        if(placeInformation.name === "?") return [];
         return {
             time: weatherInformation.time[day].substring(0,10),
             weatherCode: weatherInformation.weatherCode[day],
@@ -106,6 +107,7 @@ class MainInfo extends React.Component {
 
     render() {
         const weather = this.loadWeatherInformation(this.state.actualDay);
+        if (weather.length < 1) return (<div id="loaing">Waiting for first data...</div>)
         const flagUrl = `https://flagcdn.com/16x12/${weather.countryCode.toLowerCase()}.png`
        return (
        <div id="content">
@@ -134,25 +136,7 @@ class MainInfo extends React.Component {
             </div>
             <Graph day={this.state.actualDay}/>
             <Forecast changeDay={(index) => this.setState({actualDay: index})}/>
-            <div className="condition">
-                <div className="flex-and-left">
-                    <span className="material-symbols-outlined">share_location</span>
-                    <span className="place-lat">LAT: {weather.lat}</span> 
-                    <span className="place-lon">LON: {weather.lon}</span>
-                </div>
-                <div className="flex-and-left">
-                <span className="hpa">UV</span>
-                <p className="param">{Math.round(weather.uv_index_max * 10) / 10}/{Math.round(weather.uv_index_clear_sky_max * 10) / 10}</p>
-                </div>
-                <div className="flex-and-left">
-                    <span className="material-symbols-outlined">rainy</span>
-                    <p className="param">{weather.precipitation_probability_max} %</p>
-                </div>
-                <div className="flex-and-left">
-                    <span className="material-symbols-outlined">wind_power</span>
-                    <p className="param">{Math.round(weather.wind_speed * 10) / 10} km/h <span className="material-symbols-outlined" style={{transform: `rotate(${weather.wind_direction}deg) scale(0.7)`}}>north</span></p>
-                </div>
-            </div>
+            <DetailsWeather weather={weather}/>
         </div>
         );
     }

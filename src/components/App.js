@@ -5,15 +5,16 @@ import Header from './Header';
 import Section from './Section';
 import Sidebar from './Sidebar';
 import Notification from './Notifications';
-
-import { loadFromLocalStorage } from '../store/localStore';
+import FirstEntry from './FirstEntry';
+import Footer from './Footer';
+import { POPUP_CONFIRM } from '../constans/constans';
 
 
 class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            images: null
+            images: null,
         }
     }
 
@@ -24,6 +25,7 @@ class App extends React.Component {
     }
     
     componentDidMount() {
+
         const images = this.importAll(require.context('../images/timeOfDay', false, /\.(png|jpe?g|svg)$/));
         this.setState({ images });
         
@@ -33,17 +35,22 @@ class App extends React.Component {
         }
     }
 
+
     render() {
-        if (!this.state.images) {
+        const { images } = this.state;
+        const { name } = this.props.data.main;
+
+        if (!images) {
             return <div>Loading...</div>;
         }
         const urlImageOfPlace = this.props.imageLink;
         return(    
             <div id="main-container" style={{background: `url(${urlImageOfPlace}) no-repeat left top fixed `}}>
                 <Header />
-                <Section />
-                <Sidebar />
-                <Notification/>
+                {name === "?" ? "" : <Sidebar />}
+                {name === "?" ? <FirstEntry/> : <Section />}
+                <Footer/>
+                <Notification />
             </div>
         )
     }

@@ -123,12 +123,10 @@ class AlongTheRoad extends React.Component {
 
             const response = openMeteoResponses[0];
 
-            // Attributes for timezone and location
             const utcOffsetSeconds = response.utcOffsetSeconds();
 
             const minutely15 = response.minutely15();
-
-            // Note: The order of weather variables in the URL query and the indices below need to match!
+            
             const weatherData = {
                 minutely15: {
                     time: range(Number(minutely15.time()), Number(minutely15.timeEnd()), minutely15.interval()).map(
@@ -141,13 +139,9 @@ class AlongTheRoad extends React.Component {
             };
 
             const roundedDateTime = new Date(roundedTime);
-
-            // Znajdowanie indeksu używając findIndex i porównując zaokrąglone czas
             const timeIndex = weatherData.minutely15.time.findIndex(t => {
-                // Zaokrąglanie każdego czasu w tablicy do kwadransów
                 const rounded = roundUpToFifteenMinutes(t.toISOString().substring(0, 16));
                 const roundedDate = new Date(rounded);
-                // Porównanie, czy zaokrąglony czas jest równy roundedTime
                 return roundedDate.getTime() === roundedDateTime.getTime();
             });
             let weather = [];
@@ -220,9 +214,9 @@ class AlongTheRoad extends React.Component {
                 <div className="along-the-road-graphic">
                     <ul>
                         { this.state.weatherAlongTheRoad.map((place, index) => {
-                            if(index === 0) return (<li><span className="material-symbols-outlined">location_on</span></li>)
-                            if(index === this.state.weatherAlongTheRoad.length-1) return (<li><span className="material-symbols-outlined">pin_drop</span></li>)
-                            return (<li><span className="material-symbols-outlined">airline_stops</span></li>)
+                            if(index === 0) return (<li key={`along-item${index}`}><span className="material-symbols-outlined">location_on</span></li>)
+                            if(index === this.state.weatherAlongTheRoad.length-1) return (<li key={`along-item${index}`}><span className="material-symbols-outlined">pin_drop</span></li>)
+                            return (<li key={`along-item${index}`}><span className="material-symbols-outlined">airline_stops</span></li>)
                         })}
                     </ul>
                 </div>

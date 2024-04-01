@@ -44,3 +44,10 @@ export const POPUP_INFO = "POPUP_INFO";
 export const POPUP_ALERT = "POPUP_ALERT";
 export const POPUP_ERROR = "POPUP_ERROR";
 export const POPUP_CONFIRM = "POPUP_CONFIRM";
+
+export const USED_API = [
+    {name: "Open-Meteo", desc: "Information about weather and geocoding", url: "https://open-meteo.com/"},
+    {name: "OpenWeatherMap", desc: "Information about weather and geocoding", url: "https://openweathermap.org/"},
+    {name: "Tom-Tom", desc: "Information about routes and times", url: "https://developer.tomtom.com/"},
+    {name: "Unsplash", desc: "Images, images and images", url: "https://unsplash.com/"},
+]
