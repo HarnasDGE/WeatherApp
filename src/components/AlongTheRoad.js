@@ -182,7 +182,8 @@ class AlongTheRoad extends React.Component {
                 Loading ... {this.state.loadingProcent} %
             </div>
         );
-
+        console.log(this.state.roadDetails);
+        const timeTravel = this.state.roadDetails.routes?.length >= 1 ? this.state.roadDetails.routes[0].summary.travelTimeInSeconds : 0;
         const allRoad = this.state.roadDetails.routes?.length >= 1 ? [...this.state.roadDetails.routes[0].legs[0].points] : [];
         const allLocations = this.state.weatherAlongTheRoad?.length > 0 ? [...this.state.weatherAlongTheRoad] : [];
 
@@ -242,7 +243,7 @@ class AlongTheRoad extends React.Component {
             </div>
 
             <div className="automap">
-                <AutoMap road={allRoad} locations={allLocations}/>
+                <AutoMap road={allRoad} locations={allLocations} timeTravel={timeTravel}/>
             </div>
         </div> 
         )

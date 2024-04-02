@@ -4,26 +4,81 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { getIconLink } from './methods/iconsMethods';
 import '../styles/automap.css';
-import { calculateTimeAtRoute } from './methods/timeMethods';
+import { calculateTimeAtRoute, timeFromSecond } from './methods/timeMethods';
 
-const PaintRoad = ({ road }) => {
+
+const PaintRoad = ({ road, timeTravel}) => {
   const map = useMap();
   const polylineRef = useRef(null); // Referencja do polilinii
+  const startMarkerRef = useRef(null);
+  const endMarkerRef = useRef(null);
+  const timeTravelInfoRef = useRef(null);
+
+  const startPoint = L.divIcon({
+    className: 'startAndEndPoints',
+    html: `<span class="material-symbols-outlined startAndEndPoints">radio_button_unchecked</span>`,
+    iconSize: [20,20]
+  });
+
+  const endPoint = L.divIcon({
+    className: 'startAndEndPoints',
+    html: `<span class="material-symbols-outlined startAndEndPoints">location_on</span>`,
+    iconSize: [20,20]
+  });
+
+  const timeTravelInfo = L.divIcon({
+    className: 'timeTravelInfo',
+    html: `
+      <div className="timeTravelInfo">
+        <p>Czas przejazdu</p>
+        <p>${timeFromSecond(timeTravel)}</p>
+      </div>
+    `,
+    iconSize: [200,70]
+  })
+
 
   useEffect(() => {
     if (polylineRef.current) {
       map.removeLayer(polylineRef.current);
       polylineRef.current = null;
     }
+    if (startMarkerRef.current) {
+      map.removeLayer(startMarkerRef.current);
+      startMarkerRef.current = null;
+    }
+    if (endMarkerRef.current) {
+      map.removeLayer(endMarkerRef.current);
+      endMarkerRef.current = null;
+    }
+    if(timeTravelInfoRef.current) {
+      map.removeLayer(timeTravelInfoRef.current);
+      timeTravelInfoRef.current = null;
+    }
 
     if (road && Array.isArray(road) && road.length > 0) {
-      polylineRef.current = L.polyline(road.map(point => [point.latitude, point.longitude]), { color: 'rgb(60, 98, 188)' }).addTo(map);
+    polylineRef.current = L.polyline(
+      road.map(point => [point.latitude, point.longitude]), 
+      { 
+        weight: 5,
+        className: 'mainRoadLine'
+      }
+    ).addTo(map);
       map.fitBounds(polylineRef.current.getBounds());
+
+
+      startMarkerRef.current = L.marker([road[0].latitude, road[0].longitude], { icon: startPoint }).addTo(map);
+      endMarkerRef.current = L.marker([road[road.length - 1].latitude, road[road.length - 1].longitude], { icon: endPoint }).addTo(map);
+      timeTravelInfoRef.current = L.marker([road[Math.floor(road.length/2)].latitude, road[Math.floor(road.length/2)].longitude], {icon: timeTravelInfo}).addTo(map);
+    
     }
+
+    
   }, [road, map]); // Reaguje na zmiany `road`
 
   return null;
 };
+
 
 
 const WeatherMarkers = ({ locationsInfo }) => {
@@ -88,13 +143,14 @@ const WeatherMarkers = ({ locationsInfo }) => {
 };
 
 
-const AutoMap = ( {road, locations} ) => {
+const AutoMap = ( {road, locations, timeTravel} ) => {
+  console.log(`timeTravelInSecond = `, timeTravel);
   return (
     <MapContainer center={[50.0619474, 19.9368564]} zoom={4} style={{ height: '400px', width: '100%' }}>
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'/>
-        <PaintRoad road={road} />
+        <PaintRoad road={road} timeTravel={timeTravel}/>
         <WeatherMarkers locationsInfo={locations}/>
     </MapContainer>
   );
