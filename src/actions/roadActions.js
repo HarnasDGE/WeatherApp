@@ -1,5 +1,5 @@
 import axios from "axios";
-import { APIKEY_OPENWEATHERAPI, APIKEY_TOMTOM, SET_ALTERNATIVE_ROUTES, SET_CONTROL_POINTS, SET_COORDS, SET_ROUTE, SET_WEATHER_ON_ROUTE } from "../constans/constans";
+import { APIKEY_OPENWEATHERAPI, APIKEY_TOMTOM, SET_ALTERNATIVE_ROUTES, SET_CONTROL_POINTS, SET_COORDS, SET_ROUTE, SET_ROUTE_TYPE, SET_WEATHER_ON_ROUTE } from "../constans/constans";
 import { roundUpToFifteenMinutes } from "../components/methods/timeMethods";
 import { fetchWeatherApi } from "openmeteo";
 
@@ -8,14 +8,18 @@ export const fetchRoute = (getStartPoint, getEndPoint) => {
         await dispatch(fetchCoords(getStartPoint, getEndPoint));
 
         const state = getState();
-        const {from, to} = state.coords;
+        const {from, to} = state.roadState.coords;
+
         const startPoint = `${from.lat},${from.lon}`;
         const endPoint = `${to.lat},${to.lon}`;
     
         try {
-            const response = await axios.get(`https://api.tomtom.com/routing/1/calculateRoute/${startPoint}:${endPoint}/json?key=${APIKEY_TOMTOM}`);
+            const response = await axios.get(`https://api.tomtom.com/routing/1/calculateRoute/${startPoint}:${endPoint}/json?maxAlternatives=2&key=${APIKEY_TOMTOM}`);
             const route = response.data;
             dispatch(setRoute(route));
+            const newState = getState();
+            console.log(`[Fetch Route SUCCESS] response: `, response.data)
+            console.log(`[Fetch Route SUCCESS] getState: `, newState);
         } catch (error) {
             console.log(`Error Action [setRoute], ${error.message}`);
         }
@@ -25,6 +29,11 @@ export const fetchRoute = (getStartPoint, getEndPoint) => {
 export const setRoute = (route) => ({
     type: SET_ROUTE,
     route
+})
+
+export const setRouteType = (routeType) => ({
+    type: SET_ROUTE_TYPE,
+    routeType
 })
 
 export const fetchCoords = (startPoint, endPoint) => {
@@ -62,7 +71,12 @@ export const setCoords = (coords) => ({
 
 export const fetchWeatherInformation = () => {
     return async (dispatch, getState) => {
-        const state = getState();
+        const state = getState().roadState;
+        console.log(`Weather Information [LOG] State: `, state);
+        if (!state.route || !state.route.routes || state.route.routes.length === 0) {
+            console.error(`[FETCH WEATHER INFORMATION FAILED] Route informations are empty`);
+            return;
+        }
         const routeCoords = state.route.routes[0].legs[0].points;
         const startCoords = `${routeCoords[0].latitude},${routeCoords[0].longitude}`;
         const interval = Math.floor(routeCoords.length / state.controlPoints + 1);
@@ -136,6 +150,7 @@ export const fetchWeatherInformation = () => {
 
             return actualWeather
         }))
+        console.log(`[Fetch Weather Information SUCCESS]`);
         dispatch(setWeather(weatherDetails));
     }
 }
@@ -148,4 +163,16 @@ export const setWeather = (weatherOnRoute) => ({
 export const setControlPoints = (controlPoints) => ({
     type: SET_CONTROL_POINTS,
     controlPoints
+})
+
+export const fetchAllDataAboutRoute = (getStartPoint, getEndPoint) => {
+    return async (dispatch) => {
+        await dispatch(fetchRoute(getStartPoint, getEndPoint));
+        await dispatch(fetchWeatherInformation());
+    }
+}
+
+export const setAlternativeRoutes = (alternativeRoutes) => ({
+    type: SET_ALTERNATIVE_ROUTES,
+    alternativeRoutes
 })

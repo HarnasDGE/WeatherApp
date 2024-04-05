@@ -1,11 +1,15 @@
-import { SET_CONTROL_POINTS, SET_COORDS, SET_ROUTE, SET_WEATHER_ON_ROUTE } from "../constans/constans"
+import { SET_ALTERNATIVE_ROUTES, SET_CONTROL_POINTS, SET_COORDS, SET_ROUTE, SET_ROUTE_TYPE, SET_WEATHER_ON_ROUTE } from "../constans/constans"
 
 const initialState = {
     route: [],
     weatherOnRoute: [],
-    coords: {},
-    controlPoints: 5
-
+    coords: {
+        from: {},
+        to: {}
+    },
+    alternativeRoutes: [],
+    controlPoints: 5,
+    routeType: "fastest"
 }
 
 export const roadReducer = (state = initialState, action) => {
@@ -18,6 +22,10 @@ export const roadReducer = (state = initialState, action) => {
             return {...state, coords: action.coords}
         case SET_CONTROL_POINTS:
             return {...state, controlPoints: action.controlPoints}
+        case SET_ALTERNATIVE_ROUTES:
+            return {...state, alternativeRoutes: action.alternativeRoutes}
+        case SET_ROUTE_TYPE:
+            return {...state, routeType: action.routeType}
         default:
             return state;
     }

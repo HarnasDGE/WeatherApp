@@ -535,11 +535,18 @@ header {
             align-items: center;
             justify-content: center;
             gap: 10px;
+            select {
+               color: rgb(0, 0, 0);
+               option {
+                color: rgba(0,0,0,1);
+               }
+            }
         }
 
         input {
             width: 200px;
         }
+
     }
 }
 

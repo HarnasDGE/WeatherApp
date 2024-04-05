@@ -15,8 +15,11 @@ class AlongTheRoad extends React.Component {
         this.state = {
             from: '',
             to: '',
-            controlPoints: 5,
             isLoading: false,
+            options: {
+                isTemperatureOnMap: false,
+                isAlternativeRoutesOnMap: false,
+            }
         }
     }
     
@@ -29,7 +32,7 @@ class AlongTheRoad extends React.Component {
     }
 
     controlPointsChanger = (event) => {
-        this.setState({controlPoints : event.target.value});
+        this.props.setControlPoints(event.target.value);    
     }
 
     checkRoute = () => {
@@ -43,15 +46,40 @@ class AlongTheRoad extends React.Component {
             return;
         }
 
-        this.props.fetchRoute(from, to);
+        this.props.fetchAllDataAboutRoute(from, to);
+    }
+
+    toggleTemperatureOnMap = () => {
+        this.setState((prevState) => ({
+            options: {
+                ...prevState.options,
+                isTemperatureOnMap: !prevState.options.isTemperatureOnMap
+            }
+        }))
+    }
+
+    toggleAlternativeRoutesOnMap = () => {
+        this.setState((prevState) => ({
+            options: {
+                ...prevState.options,
+                isAlternativeRoutesOnMap: !prevState.options.isAlternativeRoutesOnMap
+            }
+        }))
+    }
+
+    setRouteType = (e) => {
+        this.props.setRouteType(e.target.value);
     }
 
     render() {
-        console.log(this.props.route);
-        //console.log(this.state.roadDetails);
-        //const timeTravel = this.state.roadDetails.routes?.length >= 1 ? this.state.roadDetails.routes[0].summary.travelTimeInSeconds : 0;
-        //const allRoad = this.state.roadDetails.routes?.length >= 1 ? [...this.state.roadDetails.routes[0].legs[0].points] : [];
-        //const allLocations = this.state.weatherAlongTheRoad?.length > 0 ? [...this.state.weatherAlongTheRoad] : [];
+        const route = this.props.route;
+        const weatherOnRoute = this.props.weatherOnRoute;
+        const controlPoints = this.props.controlPoints;
+        const options = this.state.options;
+        
+        const timeTravel = route.routes?.length >= 1 ? route.routes[0].summary.travelTimeInSeconds : 0;
+        const allRoad = route.routes?.length >= 1 ? [...route.routes[0].legs[0].points] : [];
+        const allLocations = weatherOnRoute?.length > 0 ? [...weatherOnRoute] : [];
 
         return (
         <div id="content">
@@ -69,25 +97,38 @@ class AlongTheRoad extends React.Component {
                 <input placeholder="From..." id="road-from" type="text" onChange={this.inputFrom} value={this.state.from}/>
                 <input placeholder="To..." id="road-to" type="text" onChange={this.inputTo} value={this.state.to}/>
                 <div className="controls">
-                    <label htmlFor="controlPoints">Control Points: {this.state.controlPoints}<input type="range" min="3" max="20" name="controlPoints" id="controlPoints" value={this.state.controlPoints} onChange={this.controlPointsChanger}/></label>
+                    <label htmlFor="controlPoints">Control Points: {controlPoints}<input type="range" min="3" max="20" name="controlPoints" id="controlPoints" value={this.state.controlPoints} onChange={this.controlPointsChanger}/></label>
+                    <label htmlFor="weatherOnRoute">Weather on route<input type="checkbox" id="weatherOnRoute" checked={options.isTemperatureOnMap} onChange={this.toggleTemperatureOnMap}/></label>
+                    <label htmlFor="alternativeRoutes">Alternative routes<input type="checkbox" id="alternativeRoutes" checked={options.isAlternativeRoutesOnMap} onChange={this.toggleAlternativeRoutesOnMap}/></label>
+                    <label>Type Route
+                        <select name="typeRoute" defaultValue="Fastest" onChange={this.setRouteType}>
+                            <option value="fastest">Fastest</option>
+                            <option value="shortest">Shortest</option>
+                            <option value="eco">Eco</option>
+                            <option value="thrilling">Thrilling</option>
+                        </select>
+                    </label>
                 </div>
                 
                 <button onClick={this.checkRoute}>Check Weather Along The Road</button>
             </div>
 
-            {/* 
+            <div className="automap">
+                <AutoMap road={allRoad} locations={allLocations} timeTravel={timeTravel} options={options}/>
+            </div>
+
             <div className="weather-along-the-road">
                 <div className="along-the-road-graphic">
                     <ul>
-                        { this.state.weatherAlongTheRoad.map((place, index) => {
+                        { weatherOnRoute.map((place, index) => {
                             if(index === 0) return (<li key={`along-item${index}`}><span className="material-symbols-outlined">location_on</span></li>)
-                            if(index === this.state.weatherAlongTheRoad.length-1) return (<li key={`along-item${index}`}><span className="material-symbols-outlined">pin_drop</span></li>)
+                            if(index === weatherOnRoute.length-1) return (<li key={`along-item${index}`}><span className="material-symbols-outlined">pin_drop</span></li>)
                             return (<li key={`along-item${index}`}><span className="material-symbols-outlined">airline_stops</span></li>)
                         })}
                     </ul>
                 </div>
                 <ul>
-                    {this.state.weatherAlongTheRoad.map((place, index) => {
+                    {weatherOnRoute.map((place, index) => {
                         return (
                             <li key={`along-item${index}`} className="along-item">
                                 <div className="along-item-weather">
@@ -107,10 +148,7 @@ class AlongTheRoad extends React.Component {
                 </ul>
             </div>
 
-            <div className="automap">
-                <AutoMap road={allRoad} locations={allLocations} timeTravel={timeTravel}/>
-            </div>
-            */}
+            
         </div> 
         )
     }

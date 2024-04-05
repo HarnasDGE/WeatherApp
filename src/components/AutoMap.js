@@ -17,13 +17,14 @@ const PaintRoad = ({ road, timeTravel}) => {
   const startPoint = L.divIcon({
     className: 'startAndEndPoints',
     html: `<span class="material-symbols-outlined startAndEndPoints">radio_button_unchecked</span>`,
-    iconSize: [20,20]
+    iconSize: [20,20],
   });
 
   const endPoint = L.divIcon({
     className: 'startAndEndPoints',
     html: `<span class="material-symbols-outlined startAndEndPoints">location_on</span>`,
-    iconSize: [20,20]
+    iconSize: [20,20],
+    iconAnchor: [10,20]
   });
 
   const timeTravelInfo = L.divIcon({
@@ -81,13 +82,13 @@ const PaintRoad = ({ road, timeTravel}) => {
 
 
 
-const WeatherMarkers = ({ locationsInfo }) => {
+const WeatherMarkers = ({ locationsInfo, options }) => {
   const map = useMap();
 
   useEffect(() => {
     const markers = []; // Tablica do przechowywania markerów
-
-    if (locationsInfo && locationsInfo.length > 0) {
+    const isTemperatureOnMap = options.isTemperatureOnMap;
+    if (locationsInfo && locationsInfo.length > 0 && isTemperatureOnMap) {
       locationsInfo.forEach(location => {
         const iconUrl = getIconLink(location.code, location.isDay);
         const weatherInfo_large = L.divIcon({
@@ -143,15 +144,14 @@ const WeatherMarkers = ({ locationsInfo }) => {
 };
 
 
-const AutoMap = ( {road, locations, timeTravel} ) => {
-  console.log(`timeTravelInSecond = `, timeTravel);
+const AutoMap = ( {road, locations, timeTravel, options} ) => {
   return (
     <MapContainer center={[50.0619474, 19.9368564]} zoom={4} style={{ height: '400px', width: '100%' }}>
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'/>
         <PaintRoad road={road} timeTravel={timeTravel}/>
-        <WeatherMarkers locationsInfo={locations}/>
+        <WeatherMarkers locationsInfo={locations} options={options}/>
     </MapContainer>
   );
 };

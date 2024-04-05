@@ -40,20 +40,20 @@
   }
 
   .startAndEndPoints {
-    color: rgba(255,0,0,1);
+    color: rgb(35, 106, 141);
   }
 
   .mainRoadLine {
     width: 5px;
-    color: rgb(60, 140, 202);
+    color: rgba(60, 140, 202,1);
   }
 
   .timeTravelInfo {
-    background: rgba(60,140,202,1);
+    background: rgba(35, 81, 116, 0.6);
     color: rgba(255,255,255,1);
     font-weight: bold;
     padding: 6px;
-    border-radius: 0px 20px 20px 20px;
+    border-radius: 5px 5px 5px 5px;
     
     position: absolute;
     left: 100px;
@@ -65,5 +65,18 @@
         text-transform: uppercase;
         font-size: 14px;
       }
+    }
+
+    &::before {
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      content: '';
+      width: 0; 
+      height: 0; 
+      border-top: 20px solid transparent;
+      border-left: 20px solid transparent;
+      border-bottom: 20px solid rgba(53, 125, 181, 0.8);
+      transform: rotate(180deg);
     }
   }

@@ -54,8 +54,6 @@ const initialState = {
 }
 
 export const weatherReducer = (state = initialState, action) => {
-    console.log(`Load weatherReducer.js`)
-
     switch(action.type) {
         case FETCH_DATA_SUCCESS:
             return {...state, data: action.payload}
