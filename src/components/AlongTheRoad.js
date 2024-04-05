@@ -73,12 +73,20 @@ class AlongTheRoad extends React.Component {
 
     render() {
         const route = this.props.route;
-        const weatherOnRoute = this.props.weatherOnRoute;
+        const weatherOnRoute = this.props.weatherOnRoute[0] ? this.props.weatherOnRoute[0] : [];
         const controlPoints = this.props.controlPoints;
         const options = this.state.options;
-        
-        const timeTravel = route.routes?.length >= 1 ? route.routes[0].summary.travelTimeInSeconds : 0;
-        const allRoad = route.routes?.length >= 1 ? [...route.routes[0].legs[0].points] : [];
+        let allRoutes = [];
+
+        if(route.routes?.length >= 1) {
+            allRoutes = route.routes.map(route => ({
+               travelTimeInSeconds: route.summary.travelTimeInSeconds,
+               points: route.legs[0].points
+            }))
+        }
+
+        console.log(`[LOG] allRoute: `, allRoutes);
+
         const allLocations = weatherOnRoute?.length > 0 ? [...weatherOnRoute] : [];
 
         return (
@@ -101,7 +109,7 @@ class AlongTheRoad extends React.Component {
                     <label htmlFor="weatherOnRoute">Weather on route<input type="checkbox" id="weatherOnRoute" checked={options.isTemperatureOnMap} onChange={this.toggleTemperatureOnMap}/></label>
                     <label htmlFor="alternativeRoutes">Alternative routes<input type="checkbox" id="alternativeRoutes" checked={options.isAlternativeRoutesOnMap} onChange={this.toggleAlternativeRoutesOnMap}/></label>
                     <label>Type Route
-                        <select name="typeRoute" defaultValue="Fastest" onChange={this.setRouteType}>
+                        <select className="typeRoute" name="typeRoute" defaultValue="Fastest" onChange={this.setRouteType}>
                             <option value="fastest">Fastest</option>
                             <option value="shortest">Shortest</option>
                             <option value="eco">Eco</option>
@@ -114,7 +122,7 @@ class AlongTheRoad extends React.Component {
             </div>
 
             <div className="automap">
-                <AutoMap road={allRoad} locations={allLocations} timeTravel={timeTravel} options={options}/>
+                <AutoMap allRoutes={allRoutes} locations={allLocations} options={options}/>
             </div>
 
             <div className="weather-along-the-road">
@@ -148,7 +156,6 @@ class AlongTheRoad extends React.Component {
                 </ul>
             </div>
 
-            
         </div> 
         )
     }

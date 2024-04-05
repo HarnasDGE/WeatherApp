@@ -71,87 +71,93 @@ export const setCoords = (coords) => ({
 
 export const fetchWeatherInformation = () => {
     return async (dispatch, getState) => {
+        const weatherOnRoutes = [];
         const state = getState().roadState;
         console.log(`Weather Information [LOG] State: `, state);
         if (!state.route || !state.route.routes || state.route.routes.length === 0) {
             console.error(`[FETCH WEATHER INFORMATION FAILED] Route informations are empty`);
             return;
         }
-        const routeCoords = state.route.routes[0].legs[0].points;
-        const startCoords = `${routeCoords[0].latitude},${routeCoords[0].longitude}`;
-        const interval = Math.floor(routeCoords.length / state.controlPoints + 1);
-        const selectedCoords = routeCoords.filter((_, index) => index % interval === 0 || index === routeCoords.length - 1);
+        for(let i = 0; i < state.route.routes.length; i++) {
+            const routeCoords = state.route.routes[i].legs[0].points;
+            const startCoords = `${routeCoords[0].latitude},${routeCoords[0].longitude}`;
+            const interval = Math.floor(routeCoords.length / state.controlPoints + 1);
+            const selectedCoords = routeCoords.filter((_, index) => index % interval === 0 || index === routeCoords.length - 1);
 
-        const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+            const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-        const weatherDetails = await Promise.all(selectedCoords.map(async (coord, index) => {
-            await delay(index * 1000);
-            const pointCoords = `${coord.latitude},${coord.longitude}`;
-            const responseTomTom = await axios.get(`https://api.tomtom.com/routing/1/calculateRoute/${startCoords}:${pointCoords}/json?key=${APIKEY_TOMTOM}`);
-            const lengthInMeters = responseTomTom.data.routes[0].summary.lengthInMeters;
-            const travelTimeInSeconds = responseTomTom.data.routes[0].summary.travelTimeInSeconds;
-            const timeToGetThisPoint = responseTomTom.data.routes[0].summary.arrivalTime.substring(0, 16);
-            const dayForecast = timeToGetThisPoint.substring(0,10);
-            const roundedTime = roundUpToFifteenMinutes(timeToGetThisPoint);
-            const params = {
-                "latitude": coord.latitude,
-                "longitude": coord.longitude,
-                "minutely_15": ["temperature_2m", "weather_code", "is_day"],
-                "start_date": dayForecast,
-                "end_date": dayForecast
-            };
-            const url = "https://api.open-meteo.com/v1/forecast";
-            const openMeteoResponses = await fetchWeatherApi(url, params);
-            const range = (start, stop, step) =>
-	            Array.from({ length: (stop - start) / step }, (_, i) => start + i * step);
-            const response = openMeteoResponses[0];
-            const utcOffsetSeconds = response.utcOffsetSeconds();
-            const minutely15 = response.minutely15();
-            const weatherData = {
-                minutely15: {
-                    time: range(Number(minutely15.time()), Number(minutely15.timeEnd()), minutely15.interval()).map(
-                        (t) => new Date((t + utcOffsetSeconds) * 1000)
-                    ),
-                    temperature2m: minutely15.variables(0).valuesArray(),
-                    weatherCode: minutely15.variables(1).valuesArray(),
-                    isDay: minutely15.variables(2).valuesArray(),
-                },
-            };
+            const weatherDetails = await Promise.all(selectedCoords.map(async (coord, index) => {
+                await delay(index * 1000);
+                const pointCoords = `${coord.latitude},${coord.longitude}`;
+                const responseTomTom = await axios.get(`https://api.tomtom.com/routing/1/calculateRoute/${startCoords}:${pointCoords}/json?key=${APIKEY_TOMTOM}`);
+                const lengthInMeters = responseTomTom.data.routes[0].summary.lengthInMeters;
+                const travelTimeInSeconds = responseTomTom.data.routes[0].summary.travelTimeInSeconds;
+                const timeToGetThisPoint = responseTomTom.data.routes[0].summary.arrivalTime.substring(0, 16);
+                const dayForecast = timeToGetThisPoint.substring(0,10);
+                const roundedTime = roundUpToFifteenMinutes(timeToGetThisPoint);
+                const params = {
+                    "latitude": coord.latitude,
+                    "longitude": coord.longitude,
+                    "minutely_15": ["temperature_2m", "weather_code", "is_day"],
+                    "start_date": dayForecast,
+                    "end_date": dayForecast
+                };
+                const url = "https://api.open-meteo.com/v1/forecast";
+                const openMeteoResponses = await fetchWeatherApi(url, params);
+                const range = (start, stop, step) =>
+                    Array.from({ length: (stop - start) / step }, (_, i) => start + i * step);
+                const response = openMeteoResponses[0];
+                const utcOffsetSeconds = response.utcOffsetSeconds();
+                const minutely15 = response.minutely15();
+                const weatherData = {
+                    minutely15: {
+                        time: range(Number(minutely15.time()), Number(minutely15.timeEnd()), minutely15.interval()).map(
+                            (t) => new Date((t + utcOffsetSeconds) * 1000)
+                        ),
+                        temperature2m: minutely15.variables(0).valuesArray(),
+                        weatherCode: minutely15.variables(1).valuesArray(),
+                        isDay: minutely15.variables(2).valuesArray(),
+                    },
+                };
 
-            const roundedDateTime = new Date(roundedTime);
-            const timeIndex = weatherData.minutely15.time.findIndex(t => {
-                const rounded = roundUpToFifteenMinutes(t.toISOString().substring(0, 16));
-                const roundedDate = new Date(rounded);
-                return roundedDate.getTime() === roundedDateTime.getTime();
-            });
-            let weather = [];
-            if(timeIndex !== -1) {
-                weather = {
-                    time: roundedDateTime,
-                    temperature_2m: weatherData.minutely15.temperature2m[timeIndex],
-                    weather_code: weatherData.minutely15.weatherCode[timeIndex],
-                    isDay: weatherData.minutely15.isDay[timeIndex]
+                const roundedDateTime = new Date(roundedTime);
+                const timeIndex = weatherData.minutely15.time.findIndex(t => {
+                    const rounded = roundUpToFifteenMinutes(t.toISOString().substring(0, 16));
+                    const roundedDate = new Date(rounded);
+                    return roundedDate.getTime() === roundedDateTime.getTime();
+                });
+                let weather = [];
+                if(timeIndex !== -1) {
+                    weather = {
+                        time: roundedDateTime,
+                        temperature_2m: weatherData.minutely15.temperature2m[timeIndex],
+                        weather_code: weatherData.minutely15.weatherCode[timeIndex],
+                        isDay: weatherData.minutely15.isDay[timeIndex]
+                    }
                 }
-            }
 
-            const openWeatherMapResponse = await axios.get(`http://api.openweathermap.org/geo/1.0/reverse?lat=${coord.latitude}&lon=${coord.longitude}&limit=1&appid=${APIKEY_OPENWEATHERAPI}`);
-            const locationName = openWeatherMapResponse.data[0]?.name || "Place on the road";
+                const openWeatherMapResponse = await axios.get(`http://api.openweathermap.org/geo/1.0/reverse?lat=${coord.latitude}&lon=${coord.longitude}&limit=1&appid=${APIKEY_OPENWEATHERAPI}`);
+                const locationName = openWeatherMapResponse.data[0]?.name || "Place on the road";
 
-            const actualWeather = {
-                name: locationName,
-                lengthInMeters: lengthInMeters,
-                travelTimeInSeconds: travelTimeInSeconds,
-                temperature: `${Math.round(weather.temperature_2m * 10) / 10}°C`,
-                code: weather.weather_code,
-                isDay: weather.isDay,
-                lat: coord.latitude,
-                lon: coord.longitude,
-            };
+                const actualWeather = {
+                    name: locationName,
+                    lengthInMeters: lengthInMeters,
+                    travelTimeInSeconds: travelTimeInSeconds,
+                    temperature: `${Math.round(weather.temperature_2m * 10) / 10}°C`,
+                    code: weather.weather_code,
+                    isDay: weather.isDay,
+                    lat: coord.latitude,
+                    lon: coord.longitude,
+                };
 
-            return actualWeather
-        }))
-        console.log(`[Fetch Weather Information SUCCESS]`);
-        dispatch(setWeather(weatherDetails));
+                return actualWeather
+            }))
+            console.log(`[Fetch Weather Information SUCCESS] weatherDetails `, weatherDetails);
+            weatherOnRoutes.push(weatherDetails);
+        }
+
+        console.log(`[Fetch Weather Information SUCCESS] weatherOnRoutes `, weatherOnRoutes);
+        dispatch(setWeather(weatherOnRoutes));
     }
 }
 

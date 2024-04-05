@@ -48,6 +48,11 @@
     color: rgba(60, 140, 202,1);
   }
 
+  .alternativeRoutes {
+    width: 5px;
+    color: rgb(235, 1, 1); /* wyraźniejszy szary */
+  }
+
   .timeTravelInfo {
     background: rgba(35, 81, 116, 0.6);
     color: rgba(255,255,255,1);
