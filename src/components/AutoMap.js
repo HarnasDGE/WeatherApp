@@ -9,54 +9,31 @@ import { calculateTimeAtRoute, timeFromSecond } from './methods/timeMethods';
 
 const PaintRoad = ({ allRoutes}) => {
   const map = useMap();
-  const mainRouteRef = useRef(null); // Referencja do polilinii
-  const alternativeRouteRef = useRef(null);
-  const alternativeRouteSecondRef = useRef(null);
+  const routeRefs = useRef(allRoutes.map(() => React.createRef()));
+  const routeTimesRefs = useRef(allRoutes.map(() => React.createRef()));
 
   const startMarkerRef = useRef(null);
   const endMarkerRef = useRef(null);
   const timeTravelInfoRef = useRef(null);
-
-  const actualMainRoute = allRoutes[0];
-
+  
   const startPoint = L.divIcon({
     className: 'startAndEndPoints',
-    html: `<span class="material-symbols-outlined startAndEndPoints">radio_button_unchecked</span>`,
+    html: `<span class="material-symbols-outlined startAndEndPoints">radio_button_checked</span>`,
     iconSize: [20,20],
   });
 
   const endPoint = L.divIcon({
     className: 'startAndEndPoints',
-    html: `<span class="material-symbols-outlined startAndEndPoints">location_on</span>`,
-    iconSize: [20,20],
+    html: `<span class="material-symbols-outlined startAndEndPoints">distance</span>`,
+    iconSize: [10,10],
     iconAnchor: [10,20]
   });
 
- /* const timeTravelInfo = L.divIcon({
-    className: 'timeTravelInfo',
-    html: `
-      <div className="timeTravelInfo">
-        <p>Czas przejazdu</p>
-        <p>${timeFromSecond(actualMainRoute.travelTimeInSeconds)}</p>
-      </div>
-    `,
-    iconSize: [200,70]
-  })
-*/
+
+
 
   useEffect(() => {
-    if (mainRouteRef.current) {
-      map.removeLayer(mainRouteRef.current);
-      mainRouteRef.current = null;
-    }
-    if (alternativeRouteRef.current) {
-      map.removeLayer(alternativeRouteRef.current);
-      alternativeRouteRef.current = null;
-    }
-    if (alternativeRouteSecondRef.current) {
-      map.removeLayer(alternativeRouteSecondRef.current);
-      alternativeRouteSecondRef.current = null;
-    }
+    
     if (startMarkerRef.current) {
       map.removeLayer(startMarkerRef.current);
       startMarkerRef.current = null;
@@ -70,49 +47,148 @@ const PaintRoad = ({ allRoutes}) => {
       timeTravelInfoRef.current = null;
     }
 
-    if (allRoutes[0] && Array.isArray(allRoutes[0].points) && allRoutes[0].points.length > 0) {
-      mainRouteRef.current = L.polyline(
-      allRoutes[0].points.map(point => [point.latitude, point.longitude]), 
-      { 
-        weight: 5,
-        color: "rgba(80, 160, 222,1)",
-        className: 'mainRoadLine'
+    routeRefs.current.forEach(ref => {
+      if (ref.current) {
+        map.removeLayer(ref.current);
+        ref.current = null;
       }
-    ).addTo(map);
-      map.fitBounds(mainRouteRef.current.getBounds());
+    });
 
-    if(allRoutes[1] && Array.isArray(allRoutes[1].points) && allRoutes[1].points.length > 0) {
-      alternativeRouteRef.current = L.polyline(
-        allRoutes[1].points.map(point => [point.latitude, point.longitude]),
-        {
-          weight: 3,
-          className: 'alternativeRoutes',
-          color: "rgba(128, 128, 128, 1)",
-          dashArray: '10, 10'
-        }
-      ).addTo(map);
-      map.fitBounds(alternativeRouteRef.current.getBounds());
-    }
+    routeTimesRefs.current.forEach(ref => {
+      if (ref.current) {
+        map.removeLayer(ref.current);
+        ref.current = null;
+      }
+    });
 
-    if(allRoutes[2] && Array.isArray(allRoutes[2].points) && allRoutes[2].points.length > 0) {
-      alternativeRouteSecondRef.current = L.polyline(
-        allRoutes[2].points.map(point => [point.latitude, point.longitude]),
-        {
-          weight: 3,
-          className: 'alternativeRoutes',
-          color: "rgba(128, 128, 128, 1)",
-          dashArray: '10, 10'
-        }
-      ).addTo(map);
-      map.fitBounds(alternativeRouteSecondRef.current.getBounds());
+    routeRefs.current = allRoutes.map(() => React.createRef());
+    routeTimesRefs.current = allRoutes.map(() => React.createRef());
+
+    if(!(allRoutes && allRoutes[0] && Array.isArray(allRoutes[0].points) && allRoutes[0].points.length > 0)) return;
+
+    const highlightLine = (line, color) => {
+      if (line) {
+        line.setStyle({ color });
+      }
+    };
+    /*
+    const highlightTimeTravel = (route, isMainRoute = false) => {
+      const travelTimeInSeconds = route ? route.travelTimeInSeconds : 0;
+      const classInfoLabel = isMainRoute ? "mainTimeTravelInfo" : "alternativeTimeTravelInfo";
+
+      const timeTravelInfo = L.divIcon({
+        className: classInfoLabel,
+        html: `
+          <div className=${classInfoLabel}>
+            <p>TIME TRAVEL</p>
+            <p>${timeFromSecond(travelTimeInSeconds)}</p>
+          </div>
+        `,
+        iconAnchor: [-70,-30]
+      })
+      const halfOfArray = Math.floor(route.points.length/2);
+      timeTravelInfoRef.current = L.marker([route.points[halfOfArray].latitude, route.points[halfOfArray].longitude], {icon: timeTravelInfo}).addTo(map);
     }
+    */
+    const actualMainRoute = allRoutes[0];
+      allRoutes.forEach((route, index) => {
+        if(route && Array.isArray(route.points) && route.points.length > 0) {
+          const isMainRoute = index === 0;
+          const differenceTime = route.travelTimeInSeconds - actualMainRoute.travelTimeInSeconds;
+          const routeTimeInfo = L.divIcon({
+            className: 'routeTimeInfo',
+            html: `
+                <p>${differenceTime > 0 ? "Slower " : "Faster"} by ${timeFromSecond(differenceTime)}</p>
+            `,
+            iconSize: "auto",
+            iconAnchor: [-10,0],
+          });
+
+          const mainRouteTimeInfo = L.divIcon({
+            className: 'mainRouteTimeInfo',
+            html: `
+                <p>${timeFromSecond(route.travelTimeInSeconds)}</p>
+            `,
+            iconSize: "auto",
+            iconAnchor: [-10,0],
+          })
+        
+          const routeLine = L.polyline(
+            route.points.map(point => [point.latitude, point.longitude]),
+            {
+              weight: 5,
+              className: isMainRoute ? 'mainRoadLine' : 'alternativeRoutes',
+              color: isMainRoute ? "rgba(80, 160, 222,1)" : "rgba(128, 128, 128, 1)",
+            }
+          ).addTo(map);
+          routeRefs.current[index].current = routeLine;
+
+          const halfOfArray = Math.floor(route.points.length/2);
+          if(!isMainRoute) {
+            const marker = L.marker([route.points[halfOfArray].latitude, route.points[halfOfArray].longitude], {icon: routeTimeInfo}).addTo(map);
+            routeTimesRefs.current[index].current = marker;
+
+            routeLine.on('mouseover', () => {
+              highlightLine(routeRefs.current[index].current, 'rgba(100, 180, 242,1)');
+              marker.setIcon(L.divIcon({
+                className: 'routeTimeInfo routeTimeInfo-hover', // Zmiana klasy przy hover
+                html: `
+                    <p>${differenceTime > 0 ? "Slower " : "Faster"} by ${timeFromSecond(Math.abs(differenceTime))}</p>
+                `,
+                iconSize: "auto",
+                iconAnchor: [-10,0],
+              }));
+            }); 
+            
+            routeLine.on('mouseout', () => {
+              highlightLine(routeRefs.current[index].current, isMainRoute ? 'rgba(80, 160, 222,1)' : 'rgba(128, 128, 128, 1)');
+              marker.setIcon(L.divIcon({
+                className: 'routeTimeInfo', // Powrót do oryginalnej klasy
+                html: `
+                    <p>${differenceTime > 0 ? "Slower " : "Faster"} by ${timeFromSecond(Math.abs(differenceTime))}</p>
+                `,
+                iconSize: "auto",
+                iconAnchor: [-10,0],
+              }));
+            }); 
+          } else {
+            const marker = L.marker([route.points[halfOfArray].latitude, route.points[halfOfArray].longitude], {icon: mainRouteTimeInfo}).addTo(map);
+            routeTimesRefs.current[index].current = marker;
+
+            routeLine.on('mouseover', () => {
+              highlightLine(routeRefs.current[index].current, 'rgba(100, 180, 242,1)');
+              marker.setIcon(L.divIcon({
+                className: 'mainRouteTimeInfo mainRouteTimeInfo-hover', // Zmiana klasy przy hover
+                html: `
+                  <p>${timeFromSecond(route.travelTimeInSeconds)}</p>                
+                  `,
+                iconSize: "auto",
+                iconAnchor: [-10,0],
+              }));
+            }); 
+            
+            routeLine.on('mouseout', () => {
+              highlightLine(routeRefs.current[index].current, isMainRoute ? 'rgba(80, 160, 222,1)' : 'rgba(128, 128, 128, 1)');
+              marker.setIcon(L.divIcon({
+                className: 'mainRouteTimeInfo', 
+                html: `
+                  <p>${timeFromSecond(route.travelTimeInSeconds)}</p>
+                `,
+                iconSize: "auto",
+                iconAnchor: [-10,0],
+              }));
+            }); 
+          }
+          
+        }
+      });
+
+      if (allRoutes.length > 0 && routeRefs.current[0].current) {
+        routeRefs.current[0].current.bringToFront();
+      }
 
       startMarkerRef.current = L.marker([actualMainRoute.points[0].latitude, actualMainRoute.points[0].longitude], { icon: startPoint }).addTo(map);
       endMarkerRef.current = L.marker([actualMainRoute.points[actualMainRoute.points.length - 1].latitude, actualMainRoute.points[actualMainRoute.points.length - 1].longitude], { icon: endPoint }).addTo(map);
-      //timeTravelInfoRef.current = L.marker([actualMainRoute[Math.floor(actualMainRoute.length/2)].latitude, actualMainRoute[Math.floor(actualMainRoute.length/2)].longitude], {icon: timeTravelInfo}).addTo(map);
-    
-    }
-
     
   }, [allRoutes, map]); // Reaguje na zmiany `road`
 

@@ -6,7 +6,7 @@
 .custom-icon-container {
     display: flex;
     align-items: center;
-    background: rgba(60, 98, 142, 0.8);
+    /*background: rgba(60, 98, 142, 0.8);*/
     width: 180px;
     border-radius: 25px 25px 25px 25px;
 
@@ -34,54 +34,128 @@
   }
   
   .custom-icon-container-small {
-    background: rgba(60, 98, 142, 0.8);
+    /*background: rgba(60, 98, 142, 0.8);*/
+    filter: drop-shadow(0px 0px 10px rgba(60,98,142,1));
     width: 55px;
     border-radius: 25px 25px 25px 25px;
   }
 
   .startAndEndPoints {
-    color: rgb(35, 106, 141);
+    color: rgba(53, 125, 181, 1);
+    font-size: 20px;
   }
 
   .mainRoadLine {
     width: 5px;
     color: rgba(60, 140, 202,1);
+    
   }
 
   .alternativeRoutes {
     width: 5px;
-    color: rgb(235, 1, 1); /* wyraźniejszy szary */
+    color: rgba(128, 128, 128, 1); /* wyraźniejszy szary */
   }
 
-  .timeTravelInfo {
-    background: rgba(35, 81, 116, 0.6);
-    color: rgba(255,255,255,1);
+  .mainTimeTravelInfo, .alternativeTimeTravelInfo {
+    width: 60px;
+    font-size: 10px;
     font-weight: bold;
-    padding: 6px;
-    border-radius: 5px 5px 5px 5px;
+    padding: 5px 10px;
+    white-space: nowrap; /* Zapobiega łamaniu tekstu */
+    border-radius: 5px;
     
-    position: absolute;
-    left: 100px;
-    top: 35px;
+    
     p {
       width: 100%;
       text-align: center;
       &:first-child {
         text-transform: uppercase;
-        font-size: 14px;
+        font-size: 10px;
       }
     }
 
+   
+  }
+
+  .alternativeTimeTravelInfo {
+    background: rgba(128, 128, 128, 1);
+    color: rgba(255,255,255,1);
+
     &::before {
       position: absolute;
-      left: 0px;
-      top: 0px;
+      left: -20px;
+      top: -20px;
       content: '';
-      width: 0; 
-      height: 0; 
-      border-top: 20px solid transparent;
-      border-left: 20px solid transparent;
-      border-bottom: 20px solid rgba(53, 125, 181, 0.8);
-      transform: rotate(180deg);
+      width: 5px; 
+      height: 5px; 
+      border-radius: 50%;
+      background: rgba(128, 128, 128, 1);
     }
+
+    &::after {
+      position: absolute;
+      left: -10px;
+      top: -10px;
+      content: '';
+      width: 10px; 
+      height: 10px; 
+      border-radius: 50%;
+      background: rgba(128, 128, 128, 1);
+    }
+  }
+  
+  .mainTimeTravelInfo {
+    background: rgba(53, 125, 181, 0.8);
+    color: rgba(255,255,255,1);
+
+    &::before {
+      position: absolute;
+      left: -20px;
+      top: -20px;
+      content: '';
+      width: 5px; 
+      height: 5px; 
+      border-radius: 50%;
+      background: rgba(53, 125, 181, 0.8);
+    }
+
+    &::after {
+      position: absolute;
+      left: -10px;
+      top: -10px;
+      content: '';
+      width: 10px; 
+      height: 10px; 
+      border-radius: 50%;
+      background: rgba(53, 125, 181, 0.8);
+    }
+  }
+
+  .routeTimeInfo, .routeTimeInfo-hover, .mainRouteTimeInfo, .mainRouteTimeInfo-hover {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    border-radius: 5px;
+    padding: 2px 5px;
+    background-color: rgba(128, 128, 128, 1); /* Ustawienie tła */
+    font-weight: 700;
+    white-space: nowrap; /* Zapobiega łamaniu tekstu */
+    
+    p {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  .routeTimeInfo-hover {
+    background-color: rgba(53, 125, 181, 0.8);/* Ustawienie tła */
+  }
+
+  .mainRouteTimeInfo {
+    background-color: rgba(53, 125, 181, 0.8);/* Ustawienie tła */
+  }
+  .mainRouteTimeInfo-hover {
+    background-color: rgba(100, 180, 242,1);/* Ustawienie tła */
   }

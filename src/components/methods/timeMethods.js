@@ -72,13 +72,13 @@ export const timeFromSecond = (seconds) => {
   remainingSeconds -= minutes * secondsPerMinute;
 
   const result = [];
-  if (years > 0) result.push(`${years} year(s)`);
-  if (months > 0) result.push(`${months} month(s)`);
-  if (weeks > 0) result.push(`${weeks} week(s)`);
-  if (days > 0) result.push(`${days} day(s)`);
-  if (hours > 0) result.push(`${hours} hour(s)`);
-  if (minutes > 0) result.push(`${minutes} minute(s)`);
-  if (remainingSeconds > 0) result.push(`${remainingSeconds} second(s)`);
+  if (years > 0) result.push(`${years} y`);
+  if (months > 0) result.push(`${months} m`);
+  if (weeks > 0) result.push(`${weeks} w`);
+  if (days > 0) result.push(`${days} d`);
+  if (hours > 0) result.push(`${hours} h`);
+  if (minutes > 0) result.push(`${minutes} m`);
+  if (remainingSeconds > 0) result.push(`${remainingSeconds} s`);
 
   return result.join(' ');
 }
