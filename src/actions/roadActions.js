@@ -1,5 +1,5 @@
 import axios from "axios";
-import { APIKEY_OPENWEATHERAPI, APIKEY_TOMTOM, SET_ALTERNATIVE_ROUTES, SET_CONTROL_POINTS, SET_COORDS, SET_ROUTE, SET_ROUTE_TYPE, SET_WEATHER_ON_ROUTE } from "../constans/constans";
+import { APIKEY_OPENWEATHERAPI, APIKEY_TOMTOM, CHANGE_MAIN_ROUTE, SET_ALTERNATIVE_ROUTES, SET_CONTROL_POINTS, SET_COORDS, SET_ROUTE, SET_ROUTE_TYPE, SET_WEATHER_ON_ROUTE } from "../constans/constans";
 import { roundUpToFifteenMinutes } from "../components/methods/timeMethods";
 import { fetchWeatherApi } from "openmeteo";
 
@@ -18,8 +18,6 @@ export const fetchRoute = (getStartPoint, getEndPoint) => {
             const route = response.data;
             dispatch(setRoute(route));
             const newState = getState();
-            console.log(`[Fetch Route SUCCESS] response: `, response.data)
-            console.log(`[Fetch Route SUCCESS] getState: `, newState);
         } catch (error) {
             console.log(`Error Action [setRoute], ${error.message}`);
         }
@@ -35,6 +33,35 @@ export const setRouteType = (routeType) => ({
     type: SET_ROUTE_TYPE,
     routeType
 })
+
+export const changeMainRoute = (index) => {
+    return (dispatch, getState) => {
+        const state = getState().roadState;
+        console.log(`[changeMainRoute LOG] routes: `, state.route.routes);
+        const routes = [...state.route.routes]; 
+        const weatherOnRoute = [...state.weatherOnRoute];
+
+        const [selectedRoute] = routes.splice(index,1);
+        routes.unshift(selectedRoute);
+
+        const [selectedWeather] = weatherOnRoute.splice(index,1);
+        weatherOnRoute.unshift(selectedWeather);
+
+        console.log(`[changeMainRoute LOG] new routes: `, {
+            type: CHANGE_MAIN_ROUTE,
+            route: routes,
+            weatherOnRoute: weatherOnRoute
+        });
+
+        dispatch(setRoute({
+            ...state.route,
+            routes: routes
+        }));
+        dispatch(setWeather(weatherOnRoute));
+    }
+}
+
+
 
 export const fetchCoords = (startPoint, endPoint) => {
     return async (dispatch) => {
@@ -73,7 +100,6 @@ export const fetchWeatherInformation = () => {
     return async (dispatch, getState) => {
         const weatherOnRoutes = [];
         const state = getState().roadState;
-        console.log(`Weather Information [LOG] State: `, state);
         if (!state.route || !state.route.routes || state.route.routes.length === 0) {
             console.error(`[FETCH WEATHER INFORMATION FAILED] Route informations are empty`);
             return;
@@ -152,11 +178,8 @@ export const fetchWeatherInformation = () => {
 
                 return actualWeather
             }))
-            console.log(`[Fetch Weather Information SUCCESS] weatherDetails `, weatherDetails);
             weatherOnRoutes.push(weatherDetails);
         }
-
-        console.log(`[Fetch Weather Information SUCCESS] weatherOnRoutes `, weatherOnRoutes);
         dispatch(setWeather(weatherOnRoutes));
     }
 }

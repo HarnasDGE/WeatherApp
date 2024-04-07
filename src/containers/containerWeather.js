@@ -1,6 +1,6 @@
 import {  updateAllFavoritePlaces, updateAllData,fetchDataSuccess, fetchPlaceInformation, setFavoritePlace, fetchDataSavedPlacesLocalStore, fetchDataFavoritePlacesLocalStore, removeFavoritePlace, changeContent, fetchForecast} from "../actions/actionsWeather";
 import { showNotification } from "../actions/notificationActions";
-import { fetchWeatherInformation, fetchRoute, setControlPoints, fetchAllDataAboutRoute, setRouteType } from "../actions/roadActions";
+import { fetchWeatherInformation, fetchRoute, setControlPoints, fetchAllDataAboutRoute, setRouteType, changeMainRoute } from "../actions/roadActions";
 export const mapStateToProps = (state) => {
     return {
       data: state.weatherState.data,
@@ -37,6 +37,7 @@ export const mapStateToProps = (state) => {
       fetchWeatherInformation: () => dispatch(fetchWeatherInformation()),
       setControlPoints: (controlPoints) => dispatch(setControlPoints(controlPoints)),
       setRouteType: (routeType) => dispatch(setRouteType(routeType)),
+      changeMainRoute: (index) => dispatch(changeMainRoute(index)),
     }
   };
   

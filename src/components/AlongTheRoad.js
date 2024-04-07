@@ -6,7 +6,7 @@ import { APIKEY_OPENWEATHERAPI, APIKEY_TOMTOM, POPUP_ERROR } from "../constans/c
 import { fetchWeatherApi } from 'openmeteo';
 import { calculateTimeAtRoute, roundUpToFifteenMinutes } from "./methods/timeMethods";
 import { getIconLink } from "./methods/iconsMethods";
-import AutoMap from "./AutoMap";
+import AutoMap from "./automap/AutoMap";
 import { showNotification } from "../actions/notificationActions";
 
 class AlongTheRoad extends React.Component {
@@ -84,8 +84,6 @@ class AlongTheRoad extends React.Component {
                points: route.legs[0].points
             }))
         }
-
-        console.log(`[LOG] allRoute: `, allRoutes);
 
         const allLocations = weatherOnRoute?.length > 0 ? [...weatherOnRoute] : [];
 
