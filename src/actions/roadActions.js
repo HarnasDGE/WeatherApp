@@ -1,5 +1,5 @@
 import axios from "axios";
-import { APIKEY_OPENWEATHERAPI, APIKEY_TOMTOM, CHANGE_MAIN_ROUTE, SET_ALTERNATIVE_ROUTES, SET_CONTROL_POINTS, SET_COORDS, SET_ROUTE, SET_ROUTE_TYPE, SET_WEATHER_ON_ROUTE } from "../constans/constans";
+import { APIKEY_OPENWEATHERAPI, APIKEY_TOMTOM, CHANGE_MAIN_ROUTE, SET_ALTERNATIVE_ROUTES, SET_CONTROL_POINTS, SET_COORDS, SET_FAVOURITE_ROUTE, SET_ROUTE, SET_ROUTE_TYPE, SET_WEATHER_ON_ROUTE } from "../constans/constans";
 import { roundUpToFifteenMinutes } from "../components/methods/timeMethods";
 import { fetchWeatherApi } from "openmeteo";
 
@@ -9,15 +9,14 @@ export const fetchRoute = (getStartPoint, getEndPoint) => {
 
         const state = getState();
         const {from, to} = state.roadState.coords;
-
+        const {routeType} = state.roadState;
         const startPoint = `${from.lat},${from.lon}`;
         const endPoint = `${to.lat},${to.lon}`;
     
         try {
-            const response = await axios.get(`https://api.tomtom.com/routing/1/calculateRoute/${startPoint}:${endPoint}/json?maxAlternatives=2&key=${APIKEY_TOMTOM}`);
+            const response = await axios.get(`https://api.tomtom.com/routing/1/calculateRoute/${startPoint}:${endPoint}/json?maxAlternatives=2&key=${APIKEY_TOMTOM}&routeType=${routeType}`);
             const route = response.data;
             dispatch(setRoute(route));
-            const newState = getState();
         } catch (error) {
             console.log(`Error Action [setRoute], ${error.message}`);
         }
@@ -34,30 +33,17 @@ export const setRouteType = (routeType) => ({
     routeType
 })
 
+
 export const changeMainRoute = (index) => {
     return (dispatch, getState) => {
         const state = getState().roadState;
-        console.log(`[changeMainRoute LOG] routes: `, state.route.routes);
         const routes = [...state.route.routes]; 
-        const weatherOnRoute = [...state.weatherOnRoute];
-
         const [selectedRoute] = routes.splice(index,1);
         routes.unshift(selectedRoute);
-
-        const [selectedWeather] = weatherOnRoute.splice(index,1);
-        weatherOnRoute.unshift(selectedWeather);
-
-        console.log(`[changeMainRoute LOG] new routes: `, {
-            type: CHANGE_MAIN_ROUTE,
-            route: routes,
-            weatherOnRoute: weatherOnRoute
-        });
-
         dispatch(setRoute({
             ...state.route,
             routes: routes
         }));
-        dispatch(setWeather(weatherOnRoute));
     }
 }
 
@@ -67,20 +53,23 @@ export const fetchCoords = (startPoint, endPoint) => {
     return async (dispatch) => {
         try {
             const responseFrom = await axios.get(`http://api.openweathermap.org/geo/1.0/direct?q=${startPoint}&limit=1&appid=${APIKEY_OPENWEATHERAPI}`)
+            console.log(`[fetchCoords LOG] responseFrom: `, responseFrom);
             try {
                 const responseTo = await axios.get(`http://api.openweathermap.org/geo/1.0/direct?q=${endPoint}&limit=1&appid=${APIKEY_OPENWEATHERAPI}`)
                 const coords = {
                     from: {
-                        name: responseFrom.name,
+                        name: responseFrom.data[0].name,
                         lat: responseFrom.data[0].lat,
                         lon: responseFrom.data[0].lon
                     },
                     to: {
-                        name: responseTo.name,
+                        name: responseTo.data[0].name,
                         lat: responseTo.data[0].lat,
                         lon: responseTo.data[0].lon
                     }
                   }
+
+                  console.log(`[fetchCoords LOG] coords: `, coords);
                   dispatch(setCoords(coords));
             } catch (error) {
                 console.error(`Error Action [fetchCoordPlaces], ${error.message}`)
@@ -204,4 +193,8 @@ export const fetchAllDataAboutRoute = (getStartPoint, getEndPoint) => {
 export const setAlternativeRoutes = (alternativeRoutes) => ({
     type: SET_ALTERNATIVE_ROUTES,
     alternativeRoutes
+})
+
+export const setFavoriteRoute = () => ({
+    type: SET_FAVOURITE_ROUTE
 })

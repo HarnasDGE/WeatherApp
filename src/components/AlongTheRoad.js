@@ -1,13 +1,10 @@
 import { connect } from "react-redux";
 import { mapDispatchToProps, mapStateToProps } from "../containers/containerWeather";
 import React from "react";
-import axios, { all } from "axios";
-import { APIKEY_OPENWEATHERAPI, APIKEY_TOMTOM, POPUP_ERROR } from "../constans/constans";
-import { fetchWeatherApi } from 'openmeteo';
+import { POPUP_ERROR } from "../constans/constans";
 import { calculateTimeAtRoute, roundUpToFifteenMinutes } from "./methods/timeMethods";
 import { getIconLink } from "./methods/iconsMethods";
 import AutoMap from "./automap/AutoMap";
-import { showNotification } from "../actions/notificationActions";
 
 class AlongTheRoad extends React.Component {
     constructor(props) {
@@ -18,7 +15,7 @@ class AlongTheRoad extends React.Component {
             isLoading: false,
             options: {
                 isTemperatureOnMap: false,
-                isAlternativeRoutesOnMap: false,
+                isAlternativeRoutesOnMap: true,
             }
         }
     }
@@ -71,9 +68,35 @@ class AlongTheRoad extends React.Component {
         this.props.setRouteType(e.target.value);
     }
 
+    checkWeatherOnRoute = () => {
+        if (!this.props.route.routes) return [];
+        const { weatherOnRoute, route } = this.props;
+        const mainRoute = route.routes[0].legs[0].points;
+        let actualWeather = [];
+        for (let weather of weatherOnRoute) {
+            let allPlacesInRoute = true; 
+            for (let place of weather) {
+                let isInRoute = mainRoute.some(point => point.latitude === place.lat && point.longitude === place.lon);
+                if (!isInRoute) {
+                    allPlacesInRoute = false;
+                    break;  
+                }
+            }
+            if (allPlacesInRoute) {
+                actualWeather = weather;
+                break;
+            }
+        }
+        return actualWeather;
+    }
+
+    setFavoriteRoute = () => {
+        this.props.setFavoriteRoute();
+    }
+
     render() {
         const route = this.props.route;
-        const weatherOnRoute = this.props.weatherOnRoute[0] ? this.props.weatherOnRoute[0] : [];
+        const weatherOnRoute = this.checkWeatherOnRoute();
         const controlPoints = this.props.controlPoints;
         const options = this.state.options;
         let allRoutes = [];
@@ -83,8 +106,8 @@ class AlongTheRoad extends React.Component {
                travelTimeInSeconds: route.summary.travelTimeInSeconds,
                points: route.legs[0].points
             }))
+            allRoutes = options.isAlternativeRoutesOnMap ? allRoutes : allRoutes.slice(0,1) ;
         }
-
         const allLocations = weatherOnRoute?.length > 0 ? [...weatherOnRoute] : [];
 
         return (
@@ -94,7 +117,7 @@ class AlongTheRoad extends React.Component {
                     {this.props.actualContent} 
                 </div>
                 <div id="controls-container">
-                    <button className="control" id="favoriteBtn" onClick={this.setFavoritePlace}><span className="material-symbols-outlined">favorite</span></button>
+                    <button className="control" id="favoriteBtn" onClick={this.setFavoriteRoute}><span className="material-symbols-outlined">favorite</span></button>
                     <button className="control" id="refreshBtn" onClick={this.refreshAll}><span className="material-symbols-outlined">refresh</span></button>
                 </div>
             </div>

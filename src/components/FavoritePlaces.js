@@ -3,18 +3,18 @@ import { connect } from "react-redux";
 import { mapDispatchToProps, mapStateToProps } from "../containers/containerWeather";
 import { getIconLink } from "./methods/iconsMethods";
 
-class Favorite extends React.Component {
+class FavoritePlaces extends React.Component {
     render() {
         const favoritePlaces = this.props.favoritePlaces || [];
         if(favoritePlaces.length < 1) return (
-            <div id="favorites">
+            <div className="favorites">
                 <div className="controls-bar">Favorite Places</div>
                 <div className="listOfPlaces"></div>
                 <span>Press {`<3`} to add place to favorites!</span>
             </div>
         )
         return (
-            <div id="favorites">
+            <div className="favorites">
                 <div className="controls-bar">Favorite Places</div>
                 <div className="listOfPlaces">
                     <ul>
@@ -41,5 +41,5 @@ class Favorite extends React.Component {
     }
 }
 
-const Container = connect(mapStateToProps, mapDispatchToProps)(Favorite);
+const Container = connect(mapStateToProps, mapDispatchToProps)(FavoritePlaces);
 export default Container;

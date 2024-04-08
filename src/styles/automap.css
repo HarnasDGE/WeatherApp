@@ -11,6 +11,9 @@
     border-radius: 25px 25px 25px 25px;
 
   }
+  .custom-icon-text {
+    text-shadow: 0px 0px 10px rgba(60,98,142,1);
+  }
   
   .custom-icon-content {
     display: flex;
@@ -19,6 +22,8 @@
   
   .custom-icon img {
     margin: 0 5px; /* Dostosuj odstęp między ikoną a tekstem */
+    filter: drop-shadow(0px 0px 10px rgba(60,98,142,1));
+
   }
   
   .custom-icon-text h2, .custom-icon-text p {
@@ -35,7 +40,6 @@
   
   .custom-icon-container-small {
     /*background: rgba(60, 98, 142, 0.8);*/
-    filter: drop-shadow(0px 0px 10px rgba(60,98,142,1));
     width: 55px;
     border-radius: 25px 25px 25px 25px;
   }

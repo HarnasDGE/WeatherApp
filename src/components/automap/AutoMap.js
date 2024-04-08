@@ -15,20 +15,18 @@ class AutoMap extends React.Component {
   }
 
   changeMainRoute = (index) => {
-    console.log(`I want change main route to index: `, index);
     this.props.changeMainRoute(index);
   }
 
   render() {
     const {allRoutes, locations, options} = this.props;
-    console.log(`[AutoMap LOG] allRoutes: `, allRoutes);
 
     return (
       <MapContainer center={[50.0619474, 19.9368564]} zoom={4} style={{ height: '400px', width: '100%' }}>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'/>
-          <PaintRoad allRoutes={allRoutes} changeMainRoute={this.changeMainRoute}/>
+          <PaintRoad allRoutes={allRoutes} changeMainRoute={this.changeMainRoute} options={options}/>
           <WeatherMarkers locationsInfo={locations} options={options}/>
       </MapContainer>
     );

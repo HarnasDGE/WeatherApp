@@ -1,4 +1,4 @@
-import { CHANGE_MAIN_ROUTE, SET_ALTERNATIVE_ROUTES, SET_CONTROL_POINTS, SET_COORDS, SET_ROUTE, SET_ROUTE_TYPE, SET_WEATHER_ON_ROUTE } from "../constans/constans"
+import { CHANGE_MAIN_ROUTE, SET_ALTERNATIVE_ROUTES, SET_CONTROL_POINTS, SET_COORDS, SET_FAVOURITE_ROUTE, SET_ROUTE, SET_ROUTE_TYPE, SET_WEATHER_ON_ROUTE } from "../constans/constans"
 
 const initialState = {
     route: [],
@@ -9,7 +9,8 @@ const initialState = {
     },
     alternativeRoutes: [],
     controlPoints: 5,
-    routeType: "fastest"
+    routeType: "fastest",
+    favoriteRoutes: [],
 }
 
 export const roadReducer = (state = initialState, action) => {
@@ -29,6 +30,9 @@ export const roadReducer = (state = initialState, action) => {
 
         case CHANGE_MAIN_ROUTE: 
             return {...state, route: action.route, weatherOnRoute: action.weatherOnRoute}
+
+        case SET_FAVOURITE_ROUTE: 
+            return {...state, favoriteRoutes: [...state.favoriteRoutes, state]}
         default:
             return state;
     }

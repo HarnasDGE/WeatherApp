@@ -1,7 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 import { mapDispatchToProps, mapStateToProps } from "../containers/containerWeather";
-import Favorite from './Favorite';
+import FavoritePlaces from './FavoritePlaces';
+import FavoriteRoutes from './FavoriteRoutes';
 
 class Sidebar extends React.Component {
     constructor(props) {
@@ -11,7 +12,8 @@ class Sidebar extends React.Component {
     render() {
         return (
              <div id="sidebar">
-                <Favorite/>
+                <FavoritePlaces/>
+                <FavoriteRoutes/>
              </div>
         )
     }

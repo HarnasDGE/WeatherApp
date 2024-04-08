@@ -8,6 +8,7 @@ export const WeatherMarkers = ({ locationsInfo, options }) => {
     const map = useMap();
   
     useEffect(() => {
+      console.log(`[WeatherMarkers LOG] loationsInfo: `, locationsInfo);
       const markers = []; // Tablica do przechowywania markerów
       const isTemperatureOnMap = options.isTemperatureOnMap;
       if (locationsInfo && locationsInfo.length > 0 && isTemperatureOnMap) {
