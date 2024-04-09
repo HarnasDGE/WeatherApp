@@ -1,4 +1,4 @@
-import { CHANGE_MAIN_ROUTE, SET_ALTERNATIVE_ROUTES, SET_CONTROL_POINTS, SET_COORDS, SET_FAVOURITE_ROUTE, SET_ROUTE, SET_ROUTE_TYPE, SET_WEATHER_ON_ROUTE } from "../constans/constans"
+import { CHANGE_MAIN_ROUTE, REMOVE_FAVORITE_ROUTE, SET_ALTERNATIVE_ROUTES, SET_CONTROL_POINTS, SET_COORDS, SET_FAVOURITE_ROUTE, SET_ROUTE, SET_ROUTE_TYPE, SET_WEATHER_ON_ROUTE } from "../constans/constans"
 
 const initialState = {
     route: [],
@@ -33,6 +33,9 @@ export const roadReducer = (state = initialState, action) => {
 
         case SET_FAVOURITE_ROUTE: 
             return {...state, favoriteRoutes: [...state.favoriteRoutes, state]}
+        case REMOVE_FAVORITE_ROUTE:
+            return {...state, favoriteRoutes: state.favoriteRoutes.filter((_, index) => index !== action.index) }
+
         default:
             return state;
     }

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { APIKEY_OPENWEATHERAPI, APIKEY_TOMTOM, CHANGE_MAIN_ROUTE, SET_ALTERNATIVE_ROUTES, SET_CONTROL_POINTS, SET_COORDS, SET_FAVOURITE_ROUTE, SET_ROUTE, SET_ROUTE_TYPE, SET_WEATHER_ON_ROUTE } from "../constans/constans";
+import { APIKEY_OPENWEATHERAPI, APIKEY_TOMTOM, CHANGE_MAIN_ROUTE, REMOVE_FAVORITE_ROUTE, SET_ALTERNATIVE_ROUTES, SET_CONTROL_POINTS, SET_COORDS, SET_FAVOURITE_ROUTE, SET_ROUTE, SET_ROUTE_TYPE, SET_WEATHER_ON_ROUTE } from "../constans/constans";
 import { roundUpToFifteenMinutes } from "../components/methods/timeMethods";
 import { fetchWeatherApi } from "openmeteo";
 
@@ -195,6 +195,33 @@ export const setAlternativeRoutes = (alternativeRoutes) => ({
     alternativeRoutes
 })
 
-export const setFavoriteRoute = () => ({
-    type: SET_FAVOURITE_ROUTE
-})
+export const setFavoriteRoute = () => {
+    return async (dispatch, getState) => {
+        const state = getState().roadState;
+        const favoriteRoutes = state.favoriteRoutes;
+        const actualCoords = state.coords;
+        const actualRouteType = state.routeType;
+        console.log(`[setFavoriteRoute LOG] state: `, state);
+        console.log(`[setFavoriteRoute LOG] favoriteRoutes: `, favoriteRoutes);
+        console.log(`[setFavoriteRoute LOG] actualCoords: `, actualCoords);
+        console.log(`[setFavoriteRoute LOG] actualRouteType: `, actualRouteType);
+
+        const checkActualRoutes = favoriteRoutes.find(route => 
+            route.coords.from.name === actualCoords.from.name && 
+            route.coords.to.name === actualCoords.to.name && 
+            route.routeType === actualRouteType
+        );
+        if(checkActualRoutes) return
+
+        dispatch( {
+            type: SET_FAVOURITE_ROUTE
+        })
+    }
+}
+
+export const removeFavoriteRoute = (index) => {
+    return {
+      type: REMOVE_FAVORITE_ROUTE,
+      index
+    }
+  }

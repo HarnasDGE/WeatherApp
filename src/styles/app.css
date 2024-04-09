@@ -318,6 +318,7 @@ header {
 
 .favorites {
     width: 100%;
+    margin-bottom: 20px;
 }
 
 .listOfPlaces {
@@ -331,7 +332,7 @@ header {
     width: 100%;
 }
 
-.favorite-place {
+.favorite-place, .favorite-route {
     background: rgba(146, 144, 195, 0.3);
     color: rgba(255,255,255, 0.9);
     height: 50px;
@@ -941,3 +942,39 @@ input[type="range"] {
         }
     }
   }
+
+  /* Favorite Route */
+
+  .favorite-route {
+    padding: 10px;
+  }
+
+  .favRoute-item {
+    display: flex;
+    gap: 10px;
+  }
+
+  .favRoute-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .favRoute-name {
+    font-weight: bold;
+  }
+
+  .favRoute-options {
+    display: flex;
+    font-size: 14px;
+  }
+
+  .favRoute-option-name {
+    margin-right: 5px;
+    font-weight: bold;
+  }
+
+  .favRoute-option-value {
+    margin-right: 10px;
+  }
+
